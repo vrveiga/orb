@@ -27,6 +27,9 @@ def update(val):
     ax.clear()
 
     x, y = calculate(v0, ang, y0, g)
+    
+    ax.set_xlim(0, 300)
+    ax.set_ylim(0, 200)
     ax.plot(x, y, 'r--')
     ax.grid(True)
 
@@ -34,10 +37,12 @@ def update(val):
 
 
 fig, ax = plt.subplots(figsize=(10, 7))
-plt.subplots_adjust(left=0.1, bottom=0.25) #
+plt.subplots_adjust(left=0.1, bottom=0.25)
 
 x, y = calculate(20, 45, 0, 9.8)
 
+ax.set_xlim(0, 300)
+ax.set_ylim(0, 200)
 ax.plot(x, y, 'r--')
 ax.grid(True)
 
@@ -45,10 +50,10 @@ ax.grid(True)
 ax_v0 = plt.axes([0.2, 0.1, 0.65, 0.03])
 s_v0 = Slider(ax_v0, 'Velocidade Inicial (m/s)', 1, 50, valinit=20)
 
-ax_ang = plt.axes([0.2, 0.06, 0.65, 0.03])
+ax_ang = plt.axes([0.2, 0.08, 0.65, 0.03])
 s_ang = Slider(ax_ang, 'Ângulo (graus)', 0, 90, valinit=45)
 
-ax_y0 = plt.axes([0.2, 0.02, 0.65, 0.03])
+ax_y0 = plt.axes([0.2, 0.06, 0.65, 0.03])
 s_y0 = Slider(ax_y0, 'Altura Inicial (m/s²)', 0, 100, valinit=0)
 
 ax_g = plt.axes([0.2, 0.04, 0.65, 0.03])
