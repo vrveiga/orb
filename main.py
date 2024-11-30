@@ -39,12 +39,12 @@ class InputBox:
         
     def update(self):
         # Faz o resize do box
-        width = max(150, self.font.render(self.text, False, self.color).get_width() + 10)
+        width = max(150, self.font.render(self.text, True, self.color).get_width() + 10)
         self.rect.w = width
 
     def draw(self, screen):
         # Renderiza o texto do input box
-        txt_surface = self.font.render(self.text, False, self.color)
+        txt_surface = self.font.render(self.text, True, self.color)
         screen.blit(txt_surface, (self.rect.x+5, self.rect.y+5))
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
@@ -101,12 +101,12 @@ class Sandbox:
             ]
             
             for i, label_text in enumerate(labels):
-                label = self.font.render(label_text, False, (255, 255, 255))
+                label = self.font.render(label_text, True, (255, 255, 255))
                 self.screen.blit(label, (50, 105 + i*100))
             
             # Desenhar botão de início
             pygame.draw.rect(self.screen, (0, 255, 0), self.start_button)
-            start_text = self.font.render('Começar', False, (0, 0, 0))
+            start_text = self.font.render('Começar', True, (0, 0, 0))
             start_text_rect = start_text.get_rect(center=self.start_button.center)
             self.screen.blit(start_text, start_text_rect)
             
@@ -198,6 +198,8 @@ def main():
         while not engine.done:
             engine.step()
             engine.process_events()
+            if engine.reset_event_triggered:
+                main()
 
 if __name__ == "__main__":
     main()

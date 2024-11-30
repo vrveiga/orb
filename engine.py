@@ -51,6 +51,7 @@ class Engine:
         self.ticks = 0
 
         self.quit_event_triggered = False
+        self.reset_event_triggered = False
 
     def add_object(self, object: Object):
         self.objects.append(object)
@@ -113,7 +114,11 @@ class Engine:
             if event.type == pygame.QUIT:
                 self.quit_event_triggered = True
                 break
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    self.reset_event_triggered = True
+
 
     @property
     def done(self) -> bool:
-        return self.quit_event_triggered
+        return self.quit_event_triggered or self.reset_event_triggered
