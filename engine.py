@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 
-from typing import Callable, Self
+from typing import Callable
 
 class Object:
     def __init__(self, mass: float, radius: int, trail: bool):
@@ -11,7 +11,7 @@ class Object:
 
         self.forces: list[Callable] = []
 
-        self.r = np.array([0] * 2)
+        self.x = np.array([0] * 2)
         self.v = np.array([0] * 2)
         self.a = np.array([0] * 2)
 
@@ -19,10 +19,13 @@ class Object:
 
     def add_force(self, force: Callable):
         self.forces.append(force)
-        
+
+class TextUpdater:
+    def __init__(self, update: Callable[[], str], position: np.array):
+        self.update = update
+        self.position = position
+
 class Engine:
-    WINDOW_SIZE = np.array([800, 600])
-    
     BACKGROUND_COLOR = [20] * 3
     FOREGROUND_COLOR = [255] * 3
 
@@ -30,15 +33,20 @@ class Engine:
 
     TRAIL_PERIOD = 30
     
-    def __init__(self):
-        pygame.init()
+    def __init__(self, surface: pygame.Surface, font: pygame.font.Font):
+        self.surface = surface
+        self.font = font
 
-        self.screen = pygame.display.set_mode(self.WINDOW_SIZE)
-        self.screen.fill(self.BACKGROUND_COLOR)
+        # Assumimos que o tamanho da tela não irá mudar
+        self.surface_size = np.array(surface.get_size())
+
+        self.surface.fill(self.BACKGROUND_COLOR)
+        pygame.display.update()
     
         self.clock = pygame.time.Clock()
 
-        self.objects = []
+        self.objects: list[Object] = []
+        self.text_updaters: list[TextUpdater] = []
 
         self.ticks = 0
 
@@ -51,44 +59,54 @@ class Engine:
         modified_rects = []
 
         def coordinate_to_pygame(x):
-            return (x + [1/2, 3/2] * self.WINDOW_SIZE) % self.WINDOW_SIZE
+            return (x + [1/2, 3/2] * self.surface_size) % self.surface_size
 
         for object in self.objects:
             if object.forces:
                 for i in range(1000):
                     # Aproximação usando o algoritmo velocity-verlet
                     v_prime = object.v + 1/2 * object.a * self.DELTA
-                    new_r = object.r + v_prime * self.DELTA
-                    F = sum(f(object.r) for f in object.forces)
+                    new_x = object.x + v_prime * self.DELTA
+                    F = sum(f(object.x) for f in object.forces)
                     new_a = F / object.mass
                     new_v = v_prime + 1/2 * new_a * self.DELTA
 
-                    object.r = new_r
+                    object.x = new_x
                     object.v = new_v
                     object.a = new_a
 
-            new_coords = coordinate_to_pygame(object.r)
+            new_coords = coordinate_to_pygame(object.x)
 
             old_rect = object.rect
             modified_rects.append(old_rect)
             
             if old_rect:
-                pygame.draw.circle(self.screen, self.BACKGROUND_COLOR, object.rect.center, object.radius)
+                pygame.draw.circle(self.surface, self.BACKGROUND_COLOR, object.rect.center, object.radius)
 
-            object.rect = pygame.draw.circle(self.screen, self.FOREGROUND_COLOR, new_coords, object.radius)
+            object.rect = pygame.draw.circle(self.surface, self.FOREGROUND_COLOR, new_coords, object.radius)
             modified_rects.append(object.rect)
 
             if old_rect and object.trail:
                 if self.ticks % self.TRAIL_PERIOD == 0:
                     v_unit = object.v / np.linalg.norm(object.v)
                     trail_coords = [object.rect.centerx - 1 - 5 * v_unit[0], object.rect.centery - 1 - 5 * v_unit[1], 1, 1]
-                    trail_rect = pygame.draw.rect(self.screen, self.FOREGROUND_COLOR, trail_coords)
+                    trail_rect = pygame.draw.rect(self.surface, self.FOREGROUND_COLOR, trail_coords)
                     modified_rects.append(trail_rect)
+
+        for updater in self.text_updaters:
+            text = updater.update()
+            rendered_text = self.font.render(text, False, self.FOREGROUND_COLOR, self.BACKGROUND_COLOR)
+            rendered_rect = self.surface.blit(rendered_text, updater.position)
+
+            modified_rects.append(rendered_rect)
 
         pygame.display.update(modified_rects)
         self.clock.tick(60)
 
         self.ticks += 1
+
+    def add_text_with_updater(self, update: Callable[[], str], position: np.array):
+        self.text_updaters.append(TextUpdater(update, position))
 
     def process_events(self):
         for event in pygame.event.get():
@@ -99,29 +117,3 @@ class Engine:
     @property
     def done(self) -> bool:
         return self.quit_event_triggered
-    
-def main():
-    engine = Engine()
-
-    G = 6.6 * 10 ** -11
-
-    m_star = 5e16
-    m_planet = 1e2
-
-    star = Object(m_star, 15, trail=False)
-    planet = Object(m_planet, 3, trail=True)
-
-    planet.r = np.array([110, 100])
-    planet.v = np.array([100, -90])
-
-    planet.add_force(lambda r: -G * m_star * m_planet * r / np.linalg.norm(r) ** 3)
-
-    engine.add_object(star)
-    engine.add_object(planet)
-
-    while not engine.done:
-        engine.step()
-        engine.process_events()
-
-if __name__ == "__main__":
-    main()

@@ -2,6 +2,8 @@ import pygame
 import sys
 import numpy as np
 
+from engine import Engine, Object
+        
 class InputBox:
     def __init__(self, x, y, w, h, text=''):
         self.rect = pygame.Rect(x, y, w, h)
@@ -30,7 +32,9 @@ class InputBox:
                     self.text = ''
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
-                else:
+                elif event.key == pygame.K_DELETE:
+                    self.text = self.text[1:]
+                elif event.unicode.isprintable():
                     self.text += event.unicode
         
     def update(self):
@@ -143,27 +147,54 @@ class Sandbox:
         
         return None
 
+G = 6.6 * 10 ** -11
+
+# NOTE: as funções update_ke e update_pe sempre serão chamadas antes de update_e
+class EnergyUpdater:
+    def __init__(self, planet: Object, star: Object):
+        self.planet = planet
+        self.star = star
+
+    # Energia cinética
+    def update_ke(self):
+        self.ke = 1/2 * self.planet.mass * np.linalg.norm(self.planet.v) ** 2
+        return f" T: {self.ke:.2e} "
+
+    # Energia potencial
+    def update_pe(self):
+        self.pe = -G * self.star.mass * self.planet.mass / np.linalg.norm(self.planet.x)
+        return f" V: {self.pe:.2e} "
+
+    # Energia mecânica
+    def update_e(self):
+        return f" E: {self.ke + self.pe:.2e} "
+
 def main():
     screen = Sandbox()
     config = screen.run()
     
     if config:
-        from engine import Engine, Object
+        # XXX
+        engine = Engine(screen.screen, screen.font)
         
-        engine = Engine()
-        G = 6.6 * 10 ** -11
-        
-        star = Object(config['massa_estrela'], 15, trail=False)
+        star = Object(config['massa_estrela'], 12, trail=False)
         planet = Object(config['massa_planeta'], 3, trail=True)
         
-        planet.r = np.array(config['posicao_planeta'])
+        planet.x = np.array(config['posicao_planeta'])
         planet.v = np.array(config['velocidade_planeta'])
         
         planet.add_force(lambda r: -G * config['massa_estrela'] * config['massa_planeta'] * r / np.linalg.norm(r) ** 3)
         
         engine.add_object(star)
         engine.add_object(planet)
-        
+
+        energy_updater = EnergyUpdater(planet, star)
+
+        # Energia cinética, potencial e mecânica do sistema
+        engine.add_text_with_updater(energy_updater.update_ke, np.array([10, 500]))
+        engine.add_text_with_updater(energy_updater.update_pe, np.array([10, 530]))
+        engine.add_text_with_updater(energy_updater.update_e, np.array([10, 560]))
+                
         while not engine.done:
             engine.step()
             engine.process_events()
