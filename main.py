@@ -26,8 +26,8 @@ class Engine:
     BACKGROUND_COLOR = [20] * 3
     FOREGROUND_COLOR = [255] * 3
 
-    DELTA = 0.01
-
+    DELTA = 1e-5
+    
     def __init__(self):
         pygame.init()
 
@@ -51,16 +51,17 @@ class Engine:
 
         for object in self.objects:
             if object.forces:
-                # Aproximação usando o algoritmo velocity-verlet
-                v_prime = object.v + 1/2 * object.a * self.DELTA
-                new_r = object.r + v_prime * self.DELTA
-                F = sum(f(object.r) for f in object.forces)
-                new_a = F / object.mass
-                new_v = v_prime + 1/2 * new_a * self.DELTA
+                for i in range(1000):
+                    # Aproximação usando o algoritmo velocity-verlet
+                    v_prime = object.v + 1/2 * object.a * self.DELTA
+                    new_r = object.r + v_prime * self.DELTA
+                    F = sum(f(object.r) for f in object.forces)
+                    new_a = F / object.mass
+                    new_v = v_prime + 1/2 * new_a * self.DELTA
 
-                object.r = new_r
-                object.v = new_v
-                object.a = new_a
+                    object.r = new_r
+                    object.v = new_v
+                    object.a = new_a
 
             new_coords = coordinate_to_pygame(object.r)
 
@@ -87,13 +88,13 @@ class Engine:
 def main():
     engine = Engine()
 
-    G = 500
+    G = 6.6 * 10 ** -11
 
-    m_star = 1e4
-    m_planet = 10
+    m_star = 5e16
+    m_planet = 1e2
 
-    star = Object(m_star, 30, trail=False)
-    planet = Object(m_planet, 5, trail=True)
+    star = Object(m_star, 20, trail=False)
+    planet = Object(m_planet, 3, trail=True)
 
     planet.r = np.array([110, 100])
     planet.v = np.array([100, -90])
