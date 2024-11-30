@@ -1,67 +1,111 @@
+import pygame
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from matplotlib.widgets import Slider
 
-def calculate(v0, ang, y0, g):
-    ang  = np.deg2rad(ang)
+from typing import Callable, Self
 
-    v0x = v0 * np.cos(ang)
-    v0y = v0 * np.sin(ang)
+class Object:
+    def __init__(self, mass: float, radius: int, trail: bool):
+        self.mass = mass
+        self.radius = radius
+        self.trail = trail
 
-    total_time = (v0y + np.sqrt(v0y**2 + 2 * g * y0)) / g
+        self.forces: list[Callable] = []
 
-    t = np.linspace(0, total_time, 500)
+        self.r = np.array([0] * 2)
+        self.v = np.array([0] * 2)
+        self.a = np.array([0] * 2)
+
+        self.rect = None
+
+    def add_force(self, force: Callable):
+        self.forces.append(force)
         
-    x = v0x * t
-    y = y0 + v0y * t - 0.5 * g * t**2
-
-    return x, y
-
-def update(val):
-    v0 = s_v0.val
-    ang = s_ang.val
-    y0 = s_y0.val
-    g = s_g.val
-
-    ax.clear()
-
-    x, y = calculate(v0, ang, y0, g)
+class Engine:
+    WINDOW_SIZE = np.array([800, 600])
     
-    ax.set_xlim(0, 300)
-    ax.set_ylim(0, 200)
-    ax.plot(x, y, 'r--')
-    ax.grid(True)
+    BACKGROUND_COLOR = [20] * 3
+    FOREGROUND_COLOR = [255] * 3
 
-    fig.canvas.draw_idle() #
+    DELTA = 0.01
 
+    def __init__(self):
+        pygame.init()
 
-fig, ax = plt.subplots(figsize=(10, 7))
-plt.subplots_adjust(left=0.1, bottom=0.25)
+        self.screen = pygame.display.set_mode(self.WINDOW_SIZE)
+        self.screen.fill(self.BACKGROUND_COLOR)
+    
+        self.clock = pygame.time.Clock()
 
-x, y = calculate(20, 45, 0, 9.8)
+        self.objects = []
 
-ax.set_xlim(0, 300)
-ax.set_ylim(0, 200)
-ax.plot(x, y, 'r--')
-ax.grid(True)
+        self.quit_event_triggered = False
 
-# cria sliders
-ax_v0 = plt.axes([0.2, 0.1, 0.65, 0.03])
-s_v0 = Slider(ax_v0, 'Velocidade Inicial (m/s)', 1, 50, valinit=20)
+    def add_object(self, object: Object):
+        self.objects.append(object)
 
-ax_ang = plt.axes([0.2, 0.08, 0.65, 0.03])
-s_ang = Slider(ax_ang, 'Ângulo (graus)', 0, 90, valinit=45)
+    def step(self):
+        modified_rects = []
 
-ax_y0 = plt.axes([0.2, 0.06, 0.65, 0.03])
-s_y0 = Slider(ax_y0, 'Altura Inicial (m/s²)', 0, 100, valinit=0)
+        def coordinate_to_pygame(x):
+            return (x + [1/2, 3/2] * self.WINDOW_SIZE) % self.WINDOW_SIZE
 
-ax_g = plt.axes([0.2, 0.04, 0.65, 0.03])
-s_g = Slider(ax_g, 'Gravidade (m/s²)', 1, 20, valinit=9.8)
+        for object in self.objects:
+            if object.forces:
+                # Aproximação usando o algoritmo velocity-verlet
+                v_prime = object.v + 1/2 * object.a * self.DELTA
+                new_r = object.r + v_prime * self.DELTA
+                F = sum(f(object.r) for f in object.forces)
+                new_a = F / object.mass
+                new_v = v_prime + 1/2 * new_a * self.DELTA
 
-s_v0.on_changed(update)
-s_ang.on_changed(update)
-s_y0.on_changed(update)
-s_g.on_changed(update)
+                object.r = new_r
+                object.v = new_v
+                object.a = new_a
 
-plt.show()
+            new_coords = coordinate_to_pygame(object.r)
+
+            if object.rect:
+                pygame.draw.rect(self.screen, self.BACKGROUND_COLOR, object.rect)
+                
+            modified_rects.append(object.rect)
+            object.rect = pygame.draw.circle(self.screen, self.FOREGROUND_COLOR, new_coords, object.radius)
+            modified_rects.append(object.rect)
+
+        pygame.display.update(modified_rects)
+        self.clock.tick(60)
+
+    def process_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.quit_event_triggered = True
+                break
+
+    @property
+    def done(self) -> bool:
+        return self.quit_event_triggered
+    
+def main():
+    engine = Engine()
+
+    G = 500
+
+    m_star = 1e4
+    m_planet = 10
+
+    star = Object(m_star, 30, trail=False)
+    planet = Object(m_planet, 5, trail=True)
+
+    planet.r = np.array([110, 100])
+    planet.v = np.array([100, -90])
+
+    planet.add_force(lambda r: -G * m_star * m_planet * r / np.linalg.norm(r) ** 3)
+
+    engine.add_object(star)
+    engine.add_object(planet)
+
+    while not engine.done:
+        engine.step()
+        engine.process_events()
+
+if __name__ == "__main__":
+    main()
