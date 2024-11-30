@@ -1,127 +1,173 @@
 import pygame
+import sys
 import numpy as np
 
-from typing import Callable, Self
+class InputBox:
+    def __init__(self, x, y, w, h, text=''):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.color_inactive = pygame.Color('lightskyblue3')
+        self.color_active = pygame.Color('dodgerblue2')
+        self.color = self.color_inactive
+        self.text = text
+        self.font = pygame.font.Font(None, 32)
+        self.active = False
 
-class Object:
-    def __init__(self, mass: float, radius: int, trail: bool):
-        self.mass = mass
-        self.radius = radius
-        self.trail = trail
-
-        self.forces: list[Callable] = []
-
-        self.r = np.array([0] * 2)
-        self.v = np.array([0] * 2)
-        self.a = np.array([0] * 2)
-
-        self.rect = None
-
-    def add_force(self, force: Callable):
-        self.forces.append(force)
-        
-class Engine:
-    WINDOW_SIZE = np.array([800, 600])
-    
-    BACKGROUND_COLOR = [20] * 3
-    FOREGROUND_COLOR = [255] * 3
-
-    DELTA = 1e-5
-
-    TRAIL_PERIOD = 30
-    
-    def __init__(self):
-        pygame.init()
-
-        self.screen = pygame.display.set_mode(self.WINDOW_SIZE)
-        self.screen.fill(self.BACKGROUND_COLOR)
-    
-        self.clock = pygame.time.Clock()
-
-        self.objects = []
-
-        self.ticks = 0
-
-        self.quit_event_triggered = False
-
-    def add_object(self, object: Object):
-        self.objects.append(object)
-
-    def step(self):
-        modified_rects = []
-
-        def coordinate_to_pygame(x):
-            return (x + [1/2, 3/2] * self.WINDOW_SIZE) % self.WINDOW_SIZE
-
-        for object in self.objects:
-            if object.forces:
-                for i in range(1000):
-                    # Aproximação usando o algoritmo velocity-verlet
-                    v_prime = object.v + 1/2 * object.a * self.DELTA
-                    new_r = object.r + v_prime * self.DELTA
-                    F = sum(f(object.r) for f in object.forces)
-                    new_a = F / object.mass
-                    new_v = v_prime + 1/2 * new_a * self.DELTA
-
-                    object.r = new_r
-                    object.v = new_v
-                    object.a = new_a
-
-            new_coords = coordinate_to_pygame(object.r)
-
-            old_rect = object.rect
-            modified_rects.append(old_rect)
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # Se o usuário clicou no input box
+            if self.rect.collidepoint(event.pos):
+                self.active = not self.active
+            else:
+                self.active = False
             
-            if old_rect:
-                pygame.draw.circle(self.screen, self.BACKGROUND_COLOR, object.rect.center, object.radius)
+            # Muda a cor do input box
+            self.color = self.color_active if self.active else self.color_inactive
+        
+        if event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_RETURN:
+                    print(self.text)
+                    self.text = ''
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+        
+    def update(self):
+        # Resize the box if the text is too long
+        width = max(200, self.font.render(self.text, True, self.color).get_width() + 10)
+        self.rect.w = width
 
-            object.rect = pygame.draw.circle(self.screen, self.FOREGROUND_COLOR, new_coords, object.radius)
-            modified_rects.append(object.rect)
+    def draw(self, screen):
+        # Renderiza o texto do input box
+        txt_surface = self.font.render(self.text, True, self.color)
+        screen.blit(txt_surface, (self.rect.x+5, self.rect.y+5))
+        pygame.draw.rect(screen, self.color, self.rect, 2)
 
-            if old_rect and object.trail:
-                if self.ticks % self.TRAIL_PERIOD == 0:
-                    v_unit = object.v / np.linalg.norm(object.v)
-                    trail_coords = [object.rect.centerx - 1 - 5 * v_unit[0], object.rect.centery - 1 - 5 * v_unit[1], 1, 1]
-                    trail_rect = pygame.draw.rect(self.screen, self.FOREGROUND_COLOR, trail_coords)
-                    modified_rects.append(trail_rect)
+class StartScreen:
+    def __init__(self, width=800, height=600):
+        pygame.init()
+        self.width = width
+        self.height = height
+        self.screen = pygame.display.set_mode((width, height))
+        pygame.display.set_caption('Simulação de Física - Configurações Iniciais')
+        
+        # Configurações padrão
+        self.massa_estrela = 5e16
+        self.massa_planeta = 1e2
+        self.posicao_planeta = [110, 100]
+        self.velocidade_planeta = [100, -90]
+        
+        # Criar input boxes
+        self.input_massa_estrela = InputBox(300, 100, 140, 32, str(self.massa_estrela))
+        self.input_massa_planeta = InputBox(300, 200, 140, 32, str(self.massa_planeta))
+        self.input_pos_x = InputBox(300, 300, 140, 32, str(self.posicao_planeta[0]))
+        self.input_pos_y = InputBox(450, 300, 140, 32, str(self.posicao_planeta[1]))
+        self.input_vel_x = InputBox(300, 400, 140, 32, str(self.velocidade_planeta[0]))
+        self.input_vel_y = InputBox(450, 400, 140, 32, str(self.velocidade_planeta[1]))
+        
+        self.input_boxes = [
+            self.input_massa_estrela, 
+            self.input_massa_planeta, 
+            self.input_pos_x, 
+            self.input_pos_y,
+            self.input_vel_x,
+            self.input_vel_y
+        ]
+        
+        self.font = pygame.font.Font(None, 36)
+        self.start_button = pygame.Rect(325, 500, 150, 50)
 
-        pygame.display.update(modified_rects)
-        self.clock.tick(60)
+    def run(self):
+        running = True
+        while running:
+            self.screen.fill((255, 255, 255))
+            
+            # Desenhar labels
+            labels = [
+                "Massa da Estrela:",
+                "Massa do Planeta:",
+                "Posição X do Planeta:",
+                "Posição Y do Planeta:",
+                "Velocidade X do Planeta:",
+                "Velocidade Y do Planeta:"
+            ]
+            
+            for i, label_text in enumerate(labels):
+                label = self.font.render(label_text, True, (0, 0, 0))
+                self.screen.blit(label, (100, 105 + i*100))
+            
+            # Desenhar botão de início
+            pygame.draw.rect(self.screen, (0, 255, 0), self.start_button)
+            start_text = self.font.render('Começar', True, (0, 0, 0))
+            start_text_rect = start_text.get_rect(center=self.start_button.center)
+            self.screen.blit(start_text, start_text_rect)
+            
+            # Processar eventos
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return None
+                
+                for box in self.input_boxes:
+                    box.handle_event(event)
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.start_button.collidepoint(event.pos):
+                        # Coletar e converter valores
+                        try:
+                            config = {
+                                'massa_estrela': float(self.input_massa_estrela.text),
+                                'massa_planeta': float(self.input_massa_planeta.text),
+                                'posicao_planeta': [
+                                    float(self.input_pos_x.text), 
+                                    float(self.input_pos_y.text)
+                                ],
+                                'velocidade_planeta': [
+                                    float(self.input_vel_x.text), 
+                                    float(self.input_vel_y.text)
+                                ]
+                            }
+                            return config
+                        except ValueError:
+                            print("Valores inválidos. Por favor, insira números válidos.")
+            
+            # Atualizar e desenhar input boxes
+            for box in self.input_boxes:
+                box.update()
+                box.draw(self.screen)
+            
+            pygame.display.flip()
+        
+        return None
 
-        self.ticks += 1
-
-    def process_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.quit_event_triggered = True
-                break
-
-    @property
-    def done(self) -> bool:
-        return self.quit_event_triggered
-    
 def main():
-    engine = Engine()
-
-    G = 6.6 * 10 ** -11
-
-    m_star = 5e16
-    m_planet = 1e2
-
-    star = Object(m_star, 15, trail=False)
-    planet = Object(m_planet, 3, trail=True)
-
-    planet.r = np.array([110, 100])
-    planet.v = np.array([100, -90])
-
-    planet.add_force(lambda r: -G * m_star * m_planet * r / np.linalg.norm(r) ** 3)
-
-    engine.add_object(star)
-    engine.add_object(planet)
-
-    while not engine.done:
-        engine.step()
-        engine.process_events()
+    start_screen = StartScreen()
+    config = start_screen.run()
+    
+    if config:
+        # Aqui você chama sua simulação principal com as configurações
+        print("Configurações selecionadas:", config)
+        
+        # Exemplo de como você poderia passar essas configurações para sua simulação original
+        from engine import Engine, Object  # Substitua pelo nome correto do seu módulo
+        
+        engine = Engine()
+        G = 6.6 * 10 ** -11
+        
+        star = Object(config['massa_estrela'], 15, trail=False)
+        planet = Object(config['massa_planeta'], 3, trail=True)
+        
+        planet.r = np.array(config['posicao_planeta'])
+        planet.v = np.array(config['velocidade_planeta'])
+        
+        planet.add_force(lambda r: -G * config['massa_estrela'] * config['massa_planeta'] * r / np.linalg.norm(r) ** 3)
+        
+        engine.add_object(star)
+        engine.add_object(planet)
+        
+        while not engine.done:
+            engine.step()
+            engine.process_events()
 
 if __name__ == "__main__":
     main()
