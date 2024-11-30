@@ -5,11 +5,11 @@ import numpy as np
 class InputBox:
     def __init__(self, x, y, w, h, text=''):
         self.rect = pygame.Rect(x, y, w, h)
-        self.color_inactive = pygame.Color('lightskyblue3')
-        self.color_active = pygame.Color('dodgerblue2')
+        self.color_inactive = pygame.Color('firebrick4')
+        self.color_active = pygame.Color('firebrick1')
         self.color = self.color_inactive
         self.text = text
-        self.font = pygame.font.Font(None, 32)
+        self.font = pygame.font.Font("assets/VCR_OSD_MONO.ttf", 20)
         self.active = False
 
     def handle_event(self, event):
@@ -59,12 +59,12 @@ class StartScreen:
         self.velocidade_planeta = [100, -90]
         
         # Criar input boxes
-        self.input_massa_estrela = InputBox(300, 100, 140, 32, str(self.massa_estrela))
-        self.input_massa_planeta = InputBox(300, 200, 140, 32, str(self.massa_planeta))
-        self.input_pos_x = InputBox(300, 300, 140, 32, str(self.posicao_planeta[0]))
-        self.input_pos_y = InputBox(450, 300, 140, 32, str(self.posicao_planeta[1]))
-        self.input_vel_x = InputBox(300, 400, 140, 32, str(self.velocidade_planeta[0]))
-        self.input_vel_y = InputBox(450, 400, 140, 32, str(self.velocidade_planeta[1]))
+        self.input_massa_estrela = InputBox(350, 100, 150, 32, str(self.massa_estrela))
+        self.input_massa_planeta = InputBox(350, 200, 150, 32, str(self.massa_planeta))
+        self.input_pos_x = InputBox(350, 300, 10, 32, str(self.posicao_planeta[0]))
+        self.input_pos_y = InputBox(400, 300, 10, 32, str(self.posicao_planeta[1]))
+        self.input_vel_x = InputBox(350, 400, 10, 32, str(self.velocidade_planeta[0]))
+        self.input_vel_y = InputBox(400, 400, 10, 32, str(self.velocidade_planeta[1]))
         
         self.input_boxes = [
             self.input_massa_estrela, 
@@ -75,26 +75,24 @@ class StartScreen:
             self.input_vel_y
         ]
         
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font("assets/VCR_OSD_MONO.ttf", 20)
         self.start_button = pygame.Rect(325, 500, 150, 50)
 
     def run(self):
         running = True
         while running:
-            self.screen.fill((255, 255, 255))
+            self.screen.fill((0, 0, 0))
             
             # Desenhar labels
             labels = [
                 "Massa da Estrela:",
                 "Massa do Planeta:",
-                "Posição X do Planeta:",
-                "Posição Y do Planeta:",
-                "Velocidade X do Planeta:",
-                "Velocidade Y do Planeta:"
+                "Posição do Planeta:",
+                "Velocidade do Planeta:",
             ]
             
             for i, label_text in enumerate(labels):
-                label = self.font.render(label_text, True, (0, 0, 0))
+                label = self.font.render(label_text, True, (255, 255, 255))
                 self.screen.blit(label, (100, 105 + i*100))
             
             # Desenhar botão de início
