@@ -194,7 +194,14 @@ def main():
         engine.add_text_with_updater(energy_updater.update_ke, np.array([10, 500]))
         engine.add_text_with_updater(energy_updater.update_pe, np.array([10, 530]))
         engine.add_text_with_updater(energy_updater.update_e, np.array([10, 560]))
-                
+
+        # Mostra a posição do viewport
+        engine.add_text_with_updater(lambda: f"({engine.viewport_center[0]}, {engine.viewport_center[1]})", np.array([10, 10]))
+
+        # Mostra key/mouse binds
+        engine.add_text_with_updater(lambda: "r: reset, esc: pausar", np.array([450, 530]))
+        engine.add_text_with_updater(lambda: "  mouse: mover câmera", np.array([450, 560]))
+
         while not engine.done:
             engine.step()
             engine.process_events()
