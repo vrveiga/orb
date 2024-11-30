@@ -34,27 +34,27 @@ class InputBox:
                     self.text += event.unicode
         
     def update(self):
-        # Resize the box if the text is too long
-        width = max(150, self.font.render(self.text, True, self.color).get_width() + 10)
+        # Faz o resize do box
+        width = max(150, self.font.render(self.text, False, self.color).get_width() + 10)
         self.rect.w = width
 
     def draw(self, screen):
         # Renderiza o texto do input box
-        txt_surface = self.font.render(self.text, True, self.color)
+        txt_surface = self.font.render(self.text, False, self.color)
         screen.blit(txt_surface, (self.rect.x+5, self.rect.y+5))
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
-class StartScreen:
+class Sandbox:
     def __init__(self, width=800, height=600):
         pygame.init()
         self.width = width
         self.height = height
         self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption('Simulação de Física - Configurações Iniciais')
+        pygame.display.set_caption('orb')
         
         # Configurações padrão
         self.massa_estrela = 5e16
-        self.massa_planeta = 1e2
+        self.massa_planeta = 100
         self.posicao_planeta = [110, 100]
         self.velocidade_planeta = [100, -90]
         
@@ -83,6 +83,11 @@ class StartScreen:
         while running:
             self.screen.fill((0, 0, 0))
             
+            # Desenha titulo
+            font_title = pygame.font.Font("assets/VCR_OSD_MONO.ttf", 60) #
+            title = font_title.render("orb", False, (255, 255, 255)) #
+            self.screen.blit(title, (350, 10)) #
+            
             # Desenhar labels
             labels = [
                 "Massa da Estrela:",
@@ -93,7 +98,7 @@ class StartScreen:
             
             for i, label_text in enumerate(labels):
                 label = self.font.render(label_text, False, (255, 255, 255))
-                self.screen.blit(label, (100, 105 + i*100))
+                self.screen.blit(label, (50, 105 + i*100))
             
             # Desenhar botão de início
             pygame.draw.rect(self.screen, (0, 255, 0), self.start_button)
@@ -139,15 +144,11 @@ class StartScreen:
         return None
 
 def main():
-    start_screen = StartScreen()
-    config = start_screen.run()
+    screen = Sandbox()
+    config = screen.run()
     
     if config:
-        # Aqui você chama sua simulação principal com as configurações
-        print("Configurações selecionadas:", config)
-        
-        # Exemplo de como você poderia passar essas configurações para sua simulação original
-        from engine import Engine, Object  # Substitua pelo nome correto do seu módulo
+        from engine import Engine, Object
         
         engine = Engine()
         G = 6.6 * 10 ** -11
