@@ -27,6 +27,8 @@ class Engine:
     FOREGROUND_COLOR = [255] * 3
 
     DELTA = 1e-5
+
+    TRAIL_PERIOD = 30
     
     def __init__(self):
         pygame.init()
@@ -37,6 +39,8 @@ class Engine:
         self.clock = pygame.time.Clock()
 
         self.objects = []
+
+        self.ticks = 0
 
         self.quit_event_triggered = False
 
@@ -65,15 +69,26 @@ class Engine:
 
             new_coords = coordinate_to_pygame(object.r)
 
-            if object.rect:
-                pygame.draw.rect(self.screen, self.BACKGROUND_COLOR, object.rect)
-                
-            modified_rects.append(object.rect)
+            old_rect = object.rect
+            modified_rects.append(old_rect)
+            
+            if old_rect:
+                pygame.draw.circle(self.screen, self.BACKGROUND_COLOR, object.rect.center, object.radius)
+
             object.rect = pygame.draw.circle(self.screen, self.FOREGROUND_COLOR, new_coords, object.radius)
             modified_rects.append(object.rect)
 
+            if old_rect and object.trail:
+                if self.ticks % self.TRAIL_PERIOD == 0:
+                    v_unit = object.v / np.linalg.norm(object.v)
+                    trail_coords = [object.rect.centerx - 1 - 5 * v_unit[0], object.rect.centery - 1 - 5 * v_unit[1], 1, 1]
+                    trail_rect = pygame.draw.rect(self.screen, self.FOREGROUND_COLOR, trail_coords)
+                    modified_rects.append(trail_rect)
+
         pygame.display.update(modified_rects)
         self.clock.tick(60)
+
+        self.ticks += 1
 
     def process_events(self):
         for event in pygame.event.get():
@@ -93,7 +108,7 @@ def main():
     m_star = 5e16
     m_planet = 1e2
 
-    star = Object(m_star, 20, trail=False)
+    star = Object(m_star, 15, trail=False)
     planet = Object(m_planet, 3, trail=True)
 
     planet.r = np.array([110, 100])
