@@ -78,7 +78,7 @@ class Sandbox:
         ]
         
         self.font = pygame.font.Font("assets/Terminus.ttf", 32)
-        self.start_button = pygame.Rect(325, 500, 150, 50)
+        self.start_button = pygame.Rect(325, 510, 150, 50)
 
     def run(self):
         running = True
@@ -86,9 +86,9 @@ class Sandbox:
             self.screen.fill([20] * 3)
             
             # Desenha titulo
-            font_title = pygame.font.Font("assets/Terminus.ttf", 64) #
+            font_title = pygame.font.Font("assets/Terminus.ttf", 96) #
             title = font_title.render("orb", False, (255, 255, 255)) #
-            self.screen.blit(title, (350, 10)) #
+            self.screen.blit(title, (330, 20)) #
             
             # Desenhar labels
             labels = [
@@ -109,7 +109,7 @@ class Sandbox:
             
             # Desenhar botão de início
             pygame.draw.rect(self.screen, 'firebrick1', self.start_button)
-            start_text = self.font.render('Começar', False, (0, 0, 0))
+            start_text = self.font.render('Começar', False, (20, 20, 20))
             start_text_rect = start_text.get_rect(center=self.start_button.center)
             self.screen.blit(start_text, start_text_rect)
             
