@@ -11,7 +11,7 @@ class InputBox:
         self.color_active = pygame.Color('firebrick1')
         self.color = self.color_inactive
         self.text = text
-        self.font = pygame.font.Font("assets/VCR_OSD_MONO.ttf", 26)
+        self.font = pygame.font.Font("assets/Terminus.ttf", 32)
         self.active = False
 
     def handle_event(self, event):
@@ -27,10 +27,7 @@ class InputBox:
         
         if event.type == pygame.KEYDOWN:
             if self.active:
-                if event.key == pygame.K_RETURN:
-                    print(self.text)
-                    self.text = ''
-                elif event.key == pygame.K_BACKSPACE:
+                if event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                 elif event.key == pygame.K_DELETE:
                     self.text = self.text[1:]
@@ -39,13 +36,14 @@ class InputBox:
         
     def update(self):
         # Faz o resize do box
-        width = max(150, self.font.render(self.text, False, self.color).get_width() + 10)
+        width = max(80, self.font.render(self.text, False, self.color).get_width() + 10)
         self.rect.w = width
 
     def draw(self, screen):
         # Renderiza o texto do input box
         txt_surface = self.font.render(self.text, False, self.color)
-        screen.blit(txt_surface, (self.rect.x+5, self.rect.y+5))
+        txt_rect = txt_surface.get_rect(center=self.rect.center)
+        screen.blit(txt_surface, txt_rect)
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
 class Sandbox:
@@ -57,18 +55,18 @@ class Sandbox:
         pygame.display.set_caption('orb')
         
         # Configurações padrão
-        self.massa_estrela = 5e16
+        self.massa_estrela = 5
         self.massa_planeta = 100
         self.posicao_planeta = [110, 100]
         self.velocidade_planeta = [100, -90]
         
         # Criar input boxes
-        self.input_massa_estrela = InputBox(450, 100, 200, 32, str(self.massa_estrela))
-        self.input_massa_planeta = InputBox(450, 200, 200, 32, str(self.massa_planeta))
-        self.input_pos_x = InputBox(450, 300, 150, 32, str(self.posicao_planeta[0]))
-        self.input_pos_y = InputBox(610, 300, 150, 32, str(self.posicao_planeta[1]))
-        self.input_vel_x = InputBox(450, 400, 150, 32, str(self.velocidade_planeta[0]))
-        self.input_vel_y = InputBox(610, 400, 150, 32, str(self.velocidade_planeta[1]))
+        self.input_massa_estrela = InputBox(520, 130, 200, 42, str(self.massa_estrela))
+        self.input_massa_planeta = InputBox(520, 230, 200, 42, str(self.massa_planeta))
+        self.input_pos_x = InputBox(520, 330, 150, 42, str(self.posicao_planeta[0]))
+        self.input_pos_y = InputBox(610, 330, 150, 42, str(self.posicao_planeta[1]))
+        self.input_vel_x = InputBox(520, 430, 150, 42, str(self.velocidade_planeta[0]))
+        self.input_vel_y = InputBox(610, 430, 150, 42, str(self.velocidade_planeta[1]))
         
         self.input_boxes = [
             self.input_massa_estrela, 
@@ -79,7 +77,7 @@ class Sandbox:
             self.input_vel_y
         ]
         
-        self.font = pygame.font.Font("assets/VCR_OSD_MONO.ttf", 26)
+        self.font = pygame.font.Font("assets/Terminus.ttf", 32)
         self.start_button = pygame.Rect(325, 500, 150, 50)
 
     def run(self):
@@ -88,24 +86,29 @@ class Sandbox:
             self.screen.fill((0, 0, 0))
             
             # Desenha titulo
-            font_title = pygame.font.Font("assets/VCR_OSD_MONO.ttf", 60) #
+            font_title = pygame.font.Font("assets/Terminus.ttf", 64) #
             title = font_title.render("orb", False, (255, 255, 255)) #
             self.screen.blit(title, (350, 10)) #
             
             # Desenhar labels
             labels = [
-                "Massa da Estrela:",
-                "Massa do Planeta:",
-                "Posição do Planeta:",
-                "Velocidade do Planeta:",
+                "Massa da Estrela (1e16 kg):",
+                "Massa do Planeta (kg):",
+                "Posição do Planeta (m):",
+                "Velocidade do Planeta (m/s):",
             ]
             
             for i, label_text in enumerate(labels):
                 label = self.font.render(label_text, False, (255, 255, 255))
-                self.screen.blit(label, (50, 105 + i*100))
+                self.screen.blit(label, (50, 135 + i*100))
+
+            label = self.font.render("x", False, 'firebrick4')
+            self.screen.blit(label, (550, 295))
+            label = self.font.render("y", False, 'firebrick4')
+            self.screen.blit(label, (640, 295))
             
             # Desenhar botão de início
-            pygame.draw.rect(self.screen, (0, 255, 0), self.start_button)
+            pygame.draw.rect(self.screen, 'firebrick1', self.start_button)
             start_text = self.font.render('Começar', False, (0, 0, 0))
             start_text_rect = start_text.get_rect(center=self.start_button.center)
             self.screen.blit(start_text, start_text_rect)
@@ -123,6 +126,24 @@ class Sandbox:
                         # Coletar e converter valores
                         try:
                             config = {
+                                'massa_estrela': float(self.input_massa_estrela.text) * 1e16,
+                                'massa_planeta': float(self.input_massa_planeta.text),
+                                'posicao_planeta': [
+                                    float(self.input_pos_x.text), 
+                                    float(self.input_pos_y.text)
+                                ],
+                                'velocidade_planeta': [
+                                    float(self.input_vel_x.text), 
+                                    float(self.input_vel_y.text)
+                                ]
+                            }
+                            return config
+                        except ValueError:
+                            print("Valores inválidos. Por favor, insira números válidos.")
+                elif  event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        try:
+                            config = {
                                 'massa_estrela': float(self.input_massa_estrela.text),
                                 'massa_planeta': float(self.input_massa_planeta.text),
                                 'posicao_planeta': [
@@ -137,7 +158,7 @@ class Sandbox:
                             return config
                         except ValueError:
                             print("Valores inválidos. Por favor, insira números válidos.")
-            
+
             # Atualizar e desenhar input boxes
             for box in self.input_boxes:
                 box.update()
