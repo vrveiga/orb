@@ -83,7 +83,7 @@ class Sandbox:
     def run(self):
         running = True
         while running:
-            self.screen.fill((0, 0, 0))
+            self.screen.fill([20] * 3)
             
             # Desenha titulo
             font_title = pygame.font.Font("assets/Terminus.ttf", 64) #
