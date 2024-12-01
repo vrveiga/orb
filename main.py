@@ -220,6 +220,7 @@ def main():
         engine.add_text_with_updater(lambda: f"({engine.viewport_center[0]}, {engine.viewport_center[1]})", np.array([10, 10]))
 
         # Mostra key/mouse binds
+        engine.add_text_with_updater(lambda: " ctrl +/-: mudar zoom", np.array([450, 500]))
         engine.add_text_with_updater(lambda: "r: reset, esc: pausar", np.array([450, 530]))
         engine.add_text_with_updater(lambda: "  mouse: mover câmera", np.array([450, 560]))
 

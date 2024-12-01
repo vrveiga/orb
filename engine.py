@@ -59,6 +59,7 @@ class Engine:
 
         # Guarda a origem do sistema de coordenadas do viewport, no sistema de coordenadas canônico
         self.viewport_center = np.array([0] * 2)
+        self.viewport_scale = 1
 
         self.drag_start = np.array([0] * 2)
 
@@ -77,7 +78,7 @@ class Engine:
 
         # Verifica se um objeto de raio `radius` com coordenadas `x` no sistema de coordenadas canônico precisa ser exibido
         def should_be_displayed(x, radius):
-            viewport_coords = x - self.viewport_center
+            viewport_coords = self.viewport_scale * (x - self.viewport_center)
             w_half, h_half = self.surface_size / 2
 
             if -w_half - radius <= viewport_coords[0] <= w_half - radius:
@@ -89,7 +90,7 @@ class Engine:
         # Converte do sistema de coordenadas canônico para o sistema de coordenadas do
         # viewport, para então converter para o sistema de coordenadas do pygame
         def coordinate_to_pygame(x, radius):
-            return ((x - self.viewport_center - radius) + [1/2, -1/2] * self.surface_size) % self.surface_size + radius
+            return (self.viewport_scale * (x - self.viewport_center) - radius + [1/2, -1/2] * self.surface_size) % self.surface_size + radius
 
         if self.paused:
             self.clock.tick(60)
@@ -121,7 +122,7 @@ class Engine:
                 new_coords = coordinate_to_pygame(object.x, object.radius)
                 
                 if object.rect:
-                    object.rect = pygame.draw.circle(self.surface, self.FOREGROUND_COLOR, new_coords, object.radius)
+                    object.rect = pygame.draw.circle(self.surface, self.FOREGROUND_COLOR, new_coords, self.viewport_scale * object.radius)
 
             for updater in self.text_updaters:
                 text = updater.update()
@@ -179,15 +180,15 @@ class Engine:
                 modified_rects.append(old_rect)
             
                 if old_rect:
-                    pygame.draw.circle(self.surface, self.BACKGROUND_COLOR, object.rect.center, object.radius)
+                    pygame.draw.circle(self.surface, self.BACKGROUND_COLOR, object.rect.center, self.viewport_scale * object.radius)
 
-                object.rect = pygame.draw.circle(self.surface, self.FOREGROUND_COLOR, new_coords, object.radius)
+                object.rect = pygame.draw.circle(self.surface, self.FOREGROUND_COLOR, new_coords, self.viewport_scale * object.radius)
                 modified_rects.append(object.rect)
 
             # Remove rastros que devem ser "apagados" (algum objeto já desenhou por cima deles)
-            for trail_coord in trail_coords:
+            for trail_coord in trail_coords[:-1]:
                 if np.linalg.norm(object.x - trail_coord) <= object.radius:
-                    self.trails.pop(trail_coord)
+                    self.trails.pop(trail_coord, None)
                             
         for updater in self.text_updaters:
             text = updater.update()
@@ -216,7 +217,7 @@ class Engine:
 
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_SIZEALL)
                 case pygame.MOUSEMOTION if self.dragging:
-                    self.viewport_center = self.viewport_center + self.drag_start - event.pos
+                    self.viewport_center = self.viewport_center + np.round(1 / self.viewport_scale * (self.drag_start - event.pos))
                     self.redraw = True
 
                     self.drag_start = np.array(event.pos)
@@ -224,6 +225,12 @@ class Engine:
                 case pygame.MOUSEBUTTONUP if event.button == 1:
                     self.dragging = False
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+                case pygame.KEYDOWN if event.mod & pygame.KMOD_CTRL and event.key == pygame.K_MINUS:
+                     self.viewport_scale /= 1.2
+                     self.redraw = True
+                case pygame.KEYDOWN if event.mod & pygame.KMOD_CTRL and event.key == pygame.K_EQUALS:
+                    self.viewport_scale *= 1.2
+                    self.redraw = True
                 case pygame.KEYDOWN if event.key == pygame.K_ESCAPE:
                     if self.paused:
                         self.redraw = True
@@ -233,7 +240,7 @@ class Engine:
 
                         darken_overlay = pygame.Surface(self.surface.get_size())
                         darken_overlay.fill(self.BACKGROUND_COLOR)
-                        darken_overlay.set_alpha(210)
+                        darken_overlay.set_alpha(180)
 
                         self.surface.blit(darken_overlay, (0, 0))
                         pygame.display.update()
