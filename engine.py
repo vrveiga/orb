@@ -159,32 +159,30 @@ class Engine:
                     self.trails.pop(first_trail_coord)
 
                     trail_rect = pygame.draw.rect(self.surface, self.BACKGROUND_COLOR, [*coordinate_to_pygame(first_trail_coord, 1), 1, 1])
-                
                     modified_rects.append(trail_rect)
 
                 v_unit = object.v / np.linalg.norm(object.v)
 
                 trail_coord = object.x - (object.radius + 3) * v_unit
-                trail_rect = pygame.draw.rect(self.surface, self.FOREGROUND_COLOR, [*coordinate_to_pygame(trail_coord, 1), 1, 1])
-                
-                modified_rects.append(trail_rect)
+
+                if should_be_displayed(trail_coord, 1):
+                    trail_rect = pygame.draw.rect(self.surface, self.FOREGROUND_COLOR, [*coordinate_to_pygame(trail_coord, 1), 1, 1])
+                    modified_rects.append(trail_rect)
 
                 self.trails[tuple(trail_coord)] = None
 
-            if not should_be_displayed(object.x, object.radius):
-                continue
-
             # Desenhar o objeto na nova posição
-            new_coords = coordinate_to_pygame(object.x, object.radius)
+            if should_be_displayed(object.x, object.radius):
+                new_coords = coordinate_to_pygame(object.x, object.radius)
 
-            old_rect = object.rect
-            modified_rects.append(old_rect)
+                old_rect = object.rect
+                modified_rects.append(old_rect)
             
-            if old_rect:
-                pygame.draw.circle(self.surface, self.BACKGROUND_COLOR, object.rect.center, object.radius)
+                if old_rect:
+                    pygame.draw.circle(self.surface, self.BACKGROUND_COLOR, object.rect.center, object.radius)
 
-            object.rect = pygame.draw.circle(self.surface, self.FOREGROUND_COLOR, new_coords, object.radius)
-            modified_rects.append(object.rect)
+                object.rect = pygame.draw.circle(self.surface, self.FOREGROUND_COLOR, new_coords, object.radius)
+                modified_rects.append(object.rect)
 
             # Remove rastros que devem ser "apagados" (algum objeto já desenhou por cima deles)
             for trail_coord in trail_coords:
