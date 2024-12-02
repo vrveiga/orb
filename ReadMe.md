@@ -5,6 +5,15 @@
 Orb é o simulador físico que usa força gravitacional para calcular a trajetória de um planeta ao redor de uma estrela e a energia envolvida no sistema. A ideia foi conseguir visualizar como diferentes condições iniciais mudam a trajetória e velocidade do planeta e a troca de energia potencial e cinética ao longo do tempo.  
 Para isso, criamos um programa em python que simula a gravitação newtoniana, com uma interface gráfica que permite ao usuário definir os parâmetros iniciais, visualizar o movimento planetário e recomeçar várias vezes.
 
+<p align="center">
+  <img width="400" height="400" src="https://github.com/user-attachments/assets/38b0ac0d-52c4-433b-b747-387982ce115b">
+</p>
+
+
+<p align="center">
+  <img width="400" height="400" src="https://github.com/user-attachments/assets/c49796fa-7f51-41ac-be58-efd3d966d6cb">
+</p>
+
 ### Implementação
 
 - Linguagens e pacotes:
