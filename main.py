@@ -71,7 +71,7 @@ class Sandbox:
         self.input_boxes = [
             self.input_massa_estrela, 
             self.input_massa_planeta, 
-            self.input_pos_x, 
+            self.input_pos_x, O 
             self.input_pos_y,
             self.input_vel_x,
             self.input_vel_y
@@ -140,11 +140,11 @@ class Sandbox:
                             return config
                         except ValueError:
                             print("Valores inválidos. Por favor, insira números válidos.")
-                elif  event.type == pygame.KEYDOWN:
+                elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         try:
                             config = {
-                                'massa_estrela': float(self.input_massa_estrela.text),
+                                'massa_estrela': float(self.input_massa_estrela.text) * 1e16,
                                 'massa_planeta': float(self.input_massa_planeta.text),
                                 'posicao_planeta': [
                                     float(self.input_pos_x.text), 
