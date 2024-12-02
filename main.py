@@ -71,7 +71,7 @@ class Sandbox:
         self.input_boxes = [
             self.input_massa_estrela, 
             self.input_massa_planeta, 
-            self.input_pos_x, O 
+            self.input_pos_x,
             self.input_pos_y,
             self.input_vel_x,
             self.input_vel_y
