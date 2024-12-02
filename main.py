@@ -5,7 +5,34 @@ import numpy as np
 from engine import Engine, Object
         
 class InputBox:
+    """
+    Classe responsável por exibir e gerenciar caixas de entrada de texto interativas em uma interface gráfica usando o pygame.
+
+    Através das funções é possível que sejam exibidas inserções e alterações nos valores de inicilização da simulação
+    feitas pelo usuário diretamente na interface gráfica do menu, cada caixa reage conforme cliques do mouse que 
+    habilitam a escrita indicada por mudanças de cor (ativo/inativo), além disso a as caixas possuem 
+    redimensionamento automático para acomodar o conteúdo textual.
+
+    Atributos:
+        rect (pygame.Rect): Retângulo delimitador da caixa de entrada.
+        color_inactive (pygame.Color): Cor da borda quando a caixa está inativa (não selecionada).
+        color_active (pygame.Color): Cor da borda quando a caixa está ativa (selecionada para alterações).
+        color (pygame.Color): Cor atual da borda (ativa ou inativa).
+        text (str): Texto inserido na caixa.
+        font (pygame.font.Font): Fonte usada para renderizar o texto.
+        active (bool): Indica se a caixa está ativa (habilitada para entrada de texto).
+    """
     def __init__(self, x, y, w, h, text=''):
+        """
+        Inicializa os atributos do novo objeto 
+
+        Parâmetros:
+            x (int): Coordenada X do canto superior esquerdo da caixa.
+            y (int): Coordenada Y do canto superior esquerdo da caixa.
+            w (int): Largura inicial da caixa.
+            h (int): Altura da caixa.
+            text (str): Texto inicial da caixa (padrão: string vazia).
+        """
         self.rect = pygame.Rect(x, y, w, h)
         self.color_inactive = pygame.Color('firebrick4')
         self.color_active = pygame.Color('firebrick1')
@@ -15,6 +42,18 @@ class InputBox:
         self.active = False
 
     def handle_event(self, event):
+        """
+        Gerencia eventos relacionados à interação com a caixa de entrada.
+
+        Parâmetros:
+            event (pygame.event.Event): Evento capturado pelo pygame.
+
+        Comportamentos:
+            - Clique do mouse aaltera o estado da caixa (ativo/inativo).
+            - Entradas do teclado são adicionadas ao texto da caixa se a caixa estiver ativa.
+            - Backspace remove o último caractere inserido se a caixa estiver ativa.
+            - DELETE remove o primeiro caractere inserido se a caixa estiver ativa.
+        """
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Se o usuário clicou no input box
             if self.rect.collidepoint(event.pos):
@@ -35,11 +74,27 @@ class InputBox:
                     self.text += event.unicode
         
     def update(self):
+        """
+        Ajusta dinamicamente a largura da caixa de entrada com base no conteúdo atual.
+
+        O tamanho mínimo da caixa é definido por padrao, mas ela se expande caso necessário para
+        acomodar o texto inserido, essa atualização é chamada sempre que o conteúdo muda.
+        """
         # Faz o resize do box
         width = max(80, self.font.render(self.text, False, self.color).get_width() + 10)
         self.rect.w = width
 
     def draw(self, screen):
+        """
+        Renderiza a caixa de entrada e seu conteúdo na tela.
+
+        Parâmetros:
+            screen (pygame.Surface): Superfície do pygame onde a caixa será desenhada.
+
+        Comportamentos:
+            - Desenha a borda da caixa com a cor correspondente ao estado (ativo/inativo).
+            - Centraliza o texto dentro da caixa e o desenha.
+        """
         # Renderiza o texto do input box
         txt_surface = self.font.render(self.text, False, self.color)
         txt_rect = txt_surface.get_rect(center=self.rect.center)
