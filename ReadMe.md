@@ -16,35 +16,38 @@ Para isso, criamos um programa em python que simula a gravitação newtoniana, c
 
 ### Implementação
 
-- Linguagens e pacotes:
+#### Linguagens e pacotes:
 Este projeto utiliza apenas a linguagem Python (o código é compatível com as versões 3.10 e adiante) e as bibliotecas Numpy e Pygame. O Numpy nos permite rapidamente realizar os cálculos com vetores usados na simulação, enquanto o Pygame nos permite facilmente implementar a parte gráfica e interativa.
 
 ### Como usar
 
-- Instalação
+#### Instalação
+
   Antes de tudo, certifique-se de ter instalado em seu computador o interpretador de Python configurado para as versões 3.10 e mais recentes. No Windows, isso pode ser feito na Microsoft Store, pesquisando "Python" e instalando a versão mais recente, ou ainda usando o Visual Studio Code, com um pacote da linguagem. No Linux, instale o pacote da linguagem que sua distribuição oferece: [Debian/Ubuntu e Fedora](https://python.org.br/instalacao-linux/) ou [Arch](https://wiki.archlinux.org/title/Python_(Portugu%C3%AAs))
-- Dependências
+
+#### Dependências
+
   Como dito, o programa usa Pygame e Numpy, bibliotecas do Python que podem ser mais facilmente baixadas usando o instalador oficial de pacotes do Python, o pip:
 
   ```sh
   pip install numpy
   pip install pygame
   ```
-- Execução
+#### Execução
   Tudo instalado, apenas execute a main:
 
   ```sh
   python main.py
   ```
   
-  Uma tela irá aparecer. Nela, você poderá ajustar os parametrôs iniciais clicando nos números e digitando-os. Pode-se ajustar:
+  Uma tela irá aparecer. Nessa interface, você poderá ajustar os parâmetros iniciais clicando nos números e digitando-os. Pode-se ajustar:
   
    - massa da estrela em 1e16 kg
    - massa do planeta em kg
    - posição inicial do planeta em metros
    - velocidade inicial do planeta em m/s
 
-  Após inserir os valores desejados, clique em "Começar" e a simulação será apresentada.
+  Após inserir os valores desejados, clique em "Começar" ou aperte a tecla "Enter" e a simulação será apresentada.
   
 ### Informações sobre o projeto
 Este projeto foi desenvolvido por:
