@@ -93,7 +93,7 @@ class Engine:
         # Converte do sistema de coordenadas canônico para o sistema de coordenadas do
         # viewport, para então converter para o sistema de coordenadas do pygame
         def coordinate_to_pygame(x, radius):
-            return self.pygame_coord_factor * (self.pygame_coord_factor * self.viewport_scale * (x - self.viewport_center) + [1/2, -1/2] * self.surface_size)
+            return self.pygame_coord_factor * (self.viewport_scale * (x - self.viewport_center) + [1/2, -1/2] * self.surface_size)
 
         if self.paused:
             self.clock.tick(60)
@@ -221,7 +221,7 @@ class Engine:
 
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_SIZEALL)
                 case pygame.MOUSEMOTION if self.dragging:
-                    self.viewport_center = self.viewport_center + 1 / self.viewport_scale * (self.drag_start - event.pos)
+                    self.viewport_center = self.viewport_center + 1 / self.viewport_scale * self.pygame_coord_factor * (self.drag_start - event.pos)
                     self.redraw = True
 
                     self.drag_start = np.array(event.pos)
