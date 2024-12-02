@@ -197,7 +197,6 @@ def main():
     config = screen.run()
     
     if config:
-        # XXX
         engine = Engine(screen.screen, screen.font)
         
         star = Object(config['massa_estrela'], 12, trail=False)
