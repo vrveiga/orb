@@ -2,7 +2,7 @@
 ## Simulador de lançamento com força gravitacional
 
 ### Descrição básica do projeto
-Orb é o simulador físico que usa força gravitacional para calcular a trajetória de um planeta ao redor de uma estrela e a energia envolvida no sistema. A ideia foi conseguir visualizar como diferentes condições iniciais mudam a trajetória e velocidade e a troca de energia potencial e cinética ao longo do tempo.
+Orb é o simulador físico que usa força gravitacional para calcular a trajetória de um planeta ao redor de uma estrela e a energia envolvida no sistema. A ideia foi conseguir visualizar como diferentes condições iniciais mudam a trajetória e velocidade do planeta e a troca de energia potencial e cinética ao longo do tempo.  
 Para isso, criamos um programa em python que simula a gravitação newtoniana, com uma interface gráfica que permite ao usuário definir os parâmetros iniciais, visualizar o movimento planetário e recomeçar várias vezes.
 
 ### Implementação
@@ -41,7 +41,7 @@ Este projeto utiliza apenas a linguagem Python (o código é compatível com as 
 Este projeto foi desenvolvido por:
 
 ```
-Felipe Cerri: 
+Felipe Camargo Cerri: felipecamargocerri@usp.br
 João Gabriel Araújo de Bastos: joaog.bastos@usp.br
 João Pedro Monteiro Machado Junqueira Castelli: jotapcastelli@usp.br
 Matheus Muzza Pires Ferreira: matheusmpf@usp.br
