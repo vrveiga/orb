@@ -198,38 +198,35 @@ def main():
     
     if config:
         engine = Engine(screen.screen, screen.font)
-        
-        star = Object(config['massa_estrela'], 12, trail=False)
-        planet = Object(config['massa_planeta'], 3, trail=True)
-        
-        planet.x = np.array(config['posicao_planeta'])
-        planet.v = np.array(config['velocidade_planeta'])
-        
-        planet.add_force(lambda r: -G * config['massa_estrela'] * config['massa_planeta'] * r / np.linalg.norm(r) ** 3)
-        
-        engine.add_object(star)
-        engine.add_object(planet)
 
-        energy_updater = EnergyUpdater(planet, star)
+        def setup_objects(config):
+            star = Object(config['massa_estrela'], 12, trail=False)
+            planet = Object(config['massa_planeta'], 3, trail=True)
+            planet.x = np.array(config['posicao_planeta'])
+            planet.v = np.array(config['velocidade_planeta'])
+            planet.add_force(lambda r: -G * config['massa_estrela'] * config['massa_planeta'] * r / np.linalg.norm(r) ** 3)
 
-        # Energia cinética, potencial e mecânica do sistema
-        engine.add_text_with_updater(energy_updater.update_ke, np.array([10, 500]))
-        engine.add_text_with_updater(energy_updater.update_pe, np.array([10, 530]))
-        engine.add_text_with_updater(energy_updater.update_e, np.array([10, 560]))
+            engine.reset()  # Limpa a engine
+            engine.add_object(star)
+            engine.add_object(planet)
 
-        # Mostra a posição do viewport
-        engine.add_text_with_updater(lambda: f"({engine.viewport_center[0]:.3g}, {engine.viewport_center[1]:.3g})", np.array([10, 10]))
+            energy_updater = EnergyUpdater(planet, star)
+            engine.add_text_with_updater(energy_updater.update_ke, np.array([10, 500]))
+            engine.add_text_with_updater(energy_updater.update_pe, np.array([10, 530]))
+            engine.add_text_with_updater(energy_updater.update_e, np.array([10, 560]))
 
-        # Mostra key/mouse binds
-        engine.add_text_with_updater(lambda: " ctrl +/-: mudar zoom", np.array([450, 500]))
-        engine.add_text_with_updater(lambda: "r: reset, esc: pausar", np.array([450, 530]))
-        engine.add_text_with_updater(lambda: "  mouse: mover câmera", np.array([450, 560]))
+        # Configura a engine inicialmente
+        setup_objects(config)
 
         while not engine.done:
             engine.step()
             engine.process_events()
+            
             if engine.reset_event_triggered:
-                main()
+                # Recoleta os dados de configuração
+                new_config = screen.run()
+                if new_config:
+                    setup_objects(new_config)  # Reconfigura a engine
 
 if __name__ == "__main__":
     main()

@@ -73,6 +73,15 @@ class Engine:
         self.quit_event_triggered = False
         self.reset_event_triggered = False
 
+    def reset(self):
+        self.objects.clear()  # Remove os objetos
+        self.trails.clear()   # Limpa os rastros
+        self.text_updaters.clear()  # Limpa os textos dinâmicos
+        self.viewport_center = np.array([0, 0])  # Reseta o centro do viewport
+        self.viewport_scale = 1  # Reseta o zoom
+        self.reset_event_triggered = False  # Garante que o evento de reset seja desmarcado
+        self.redraw = True
+
     def add_object(self, object: Object):
         self.objects.append(object)
 
