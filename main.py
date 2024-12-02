@@ -179,16 +179,18 @@ class EnergyUpdater:
     # Energia cinética
     def update_ke(self):
         self.ke = 1/2 * self.planet.mass * np.linalg.norm(self.planet.v) ** 2
-        return f" T: {self.ke:.2e} "
+        return f" T: {" " if self.ke >= 0 else ""}{self.ke:.2e}"
 
     # Energia potencial
     def update_pe(self):
         self.pe = -G * self.star.mass * self.planet.mass / np.linalg.norm(self.planet.x)
-        return f" V: {self.pe:.2e} "
+        return f" V: {" " if self.pe >= 0 else ""}{self.pe:.2e}"
 
     # Energia mecânica
     def update_e(self):
-        return f" E: {self.ke + self.pe:.2e} "
+        self.e = self.ke + self.pe
+        
+        return f" E: {" " if self.e >= 0 else ""}{self.e:.2e}"
 
 def main():
     screen = Sandbox()
@@ -217,7 +219,7 @@ def main():
         engine.add_text_with_updater(energy_updater.update_e, np.array([10, 560]))
 
         # Mostra a posição do viewport
-        engine.add_text_with_updater(lambda: f"({engine.viewport_center[0]}, {engine.viewport_center[1]})", np.array([10, 10]))
+        engine.add_text_with_updater(lambda: f"({engine.viewport_center[0]:.3g}, {engine.viewport_center[1]:.3g})", np.array([10, 10]))
 
         # Mostra key/mouse binds
         engine.add_text_with_updater(lambda: " ctrl +/-: mudar zoom", np.array([450, 500]))
