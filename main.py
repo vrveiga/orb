@@ -202,18 +202,30 @@ def main():
         def setup_objects(config):
             star = Object(config['massa_estrela'], 12, trail=False)
             planet = Object(config['massa_planeta'], 3, trail=True)
+
             planet.x = np.array(config['posicao_planeta'])
             planet.v = np.array(config['velocidade_planeta'])
+
             planet.add_force(lambda r: -G * config['massa_estrela'] * config['massa_planeta'] * r / np.linalg.norm(r) ** 3)
 
             engine.reset()  # Limpa a engine
+
             engine.add_object(star)
             engine.add_object(planet)
 
             energy_updater = EnergyUpdater(planet, star)
+
             engine.add_text_with_updater(energy_updater.update_ke, np.array([10, 500]))
             engine.add_text_with_updater(energy_updater.update_pe, np.array([10, 530]))
             engine.add_text_with_updater(energy_updater.update_e, np.array([10, 560]))
+
+            # Mostra a posição do viewport
+            engine.add_text_with_updater(lambda: f"({engine.viewport_center[0]:.3g}, {engine.viewport_center[1]:.3g})", np.array([10, 10]))
+
+            # Mostra key/mouse binds
+            engine.add_text_with_updater(lambda: " ctrl +/-: mudar zoom", np.array([450, 500]))
+            engine.add_text_with_updater(lambda: "r: reset, esc: pausar", np.array([450, 530]))
+            engine.add_text_with_updater(lambda: "  mouse: mover câmera", np.array([450, 560]))
 
         # Configura a engine inicialmente
         setup_objects(config)
