@@ -1,3 +1,24 @@
+"""
+Nome do Projeto: Simulador de gravitacao Newtoniana
+
+    Descrição: O projeto desenvolvido visa simular a orbita de um planeta entorno de sua estrela.
+    Tal projeto, permite o usuário manipular o peso da estrela e do planeta. Além disso, permite a
+    mudança das componentes no eixo x e y da velociadade do planeta. Para incrementar a análise do
+    movimento, foi disponibilizado os valores da energia potencial, cinética e mecânica, os quais 
+    são atualizados no decorrer da simulação quando necessário.
+
+    Autores: 
+    Marcelo Martins Conti - NUSP: 15474629
+    Vitor Rocha Veiga - NUSP: 15492449
+    Matheus Muzza Pires Ferreira - NUSP: 15479468
+    João Gabriel Araújo de Bastos - NUSP: 1546263
+    Felipe Camargo Cerri  - NUSP: 15451119
+    João Pedro Monteiro Machado Junqueira Castelli - NUSP: 15463450
+
+    Este projeto faz parte do processo avaliativo da disciplina 7600105 - Física Básica I (2024) 
+    da USP-São Carlos ministrada pela(o) [Prof. Krissia de Zawadzki/Esmerindo de Sousa Bernardes]
+"""
+
 import pygame
 import sys
 import numpy as np
