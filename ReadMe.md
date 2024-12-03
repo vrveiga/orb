@@ -191,5 +191,7 @@ Vitor Rocha Veiga: vitorveiga@usp.br
 ```
 
 ## Referências:
-(1) Bernardes, E. de S. (2024). Gravitação (Notas de aula). 7600105 - Física Básica I. Universidade de São Paulo, São Carlos.
-
+(1) Bernardes, E. de S. (2024). Gravitação (Notas de aula). 7600105 - Física Básica I. Universidade de São Paulo, São Carlos.  
+(2) Wikipedia contributors. (2024, Setembro 28). Verlet integration. Em Wikipedia, The Free Encyclopedia. Acesso 10:33, Dezembro 3, 2024, de https://en.wikipedia.org/w/index.php?title=Verlet_integration&oldid=1248330084  
+(3) Morten Hjorth-Jensen. (2020, Setembro 24). The Verlet method. Em Computational Physics Lectures: Ordinary differential equations. Acesso 10:42, Dezembro 3, 2024, de https://compphysics.github.io/ComputationalPhysics/doc/pub/ode/html/._ode-bs017.html  
+(4) Pygame Github organisation. Pygame official documentation. Acesso 10:34, Dezembro 3, 2024, de https://www.pygame.org/docs/  
