@@ -107,11 +107,11 @@ podemos montar a seguinte tabela:
 Utilizamos coordenada cartesianas, em que a origem se encontra no centro de massa da estrela. E de acordo com a segunda lei de Newton, temos:
 
 $$
-\vec{F} = m\vec{a} = \frac{GMm}{r^2}\hat{r}
+\vec{F} = m\vec{a} = -\frac{GMm}{r^2}\hat{r}
 $$
 
 $$
-\vec{a} = \frac{GM}{r^2}\hat{r}
+\vec{a} = -\frac{GM}{r^2}\hat{r}
 $$
 
 Com isso podemos adotar o método numérico de **Velocity Verlet**, 
