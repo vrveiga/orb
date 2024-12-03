@@ -18,8 +18,10 @@ Para isso, criamos um programa em python que simula a gravitação newtoniana, c
 
 ### 1. sistema adotado
 Adotando que a massa da estrela ($$M$$) é muito maior qua a massa do planeta ($$m$$), logo, podemos assumir que o centro de massa do sistema se encontra no centro da estrela. Além disso, como a trajetória criada por uma força central é plana, podemos usar o sistema polar de coordenadas $$(r, θ)$$. Tal que:
+
 $$\vec{r} = r \hat{r}$$
 $$\vec{v} = \dot{r} \hat{r} + r \dot{\theta} \hat{\theta}$$
+
 onde:
 - $$\hat{r}$$ é o versor na direção radial;
 - $$\hat{\theta}$$ é o versor na direção tangencial.
