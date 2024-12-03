@@ -99,7 +99,40 @@ podemos montar a seguinte tabela:
 | $$e<1$$ | $$E < 0$$ | Elipese |
 | $$e=0$$ | $$E = -\frac{\epsilon}{2}$$ | Circunferência |
 
-#### 7. Conclusão
+#### 7. Método adotado no nosso simulador
+
+Utilizamos coordenada cartesianas, em que a origem se encontra no centro de massa da estrela. E de acordo com a segunda lei de Newton, temos:
+
+$$
+\vec{F} = m\vec{a} = \frac{GMm}{r^2}\hat{r}
+$$
+
+$$
+\vec{a} = \frac{GM}{r^2}\hat{r}
+$$
+
+Com isso podemos adotar o método numérico de **Velocity Verlet**, 
+Passo intermediário:
+
+$$
+\vec{v}\_{(t+\frac{1}{2}\Delta t)} = \vec{v}\_{(t)} + \frac{1}{2}\vec{a}\_{(t)}\Delta t
+$$
+
+$$
+\vec{x}\_{(t+\Delta t)} = \vec{x}\_{(t)} + \vec{v}\_{(t+\frac{1}{2}\Delta t)}\Delta t
+$$
+
+Logo, podemos encontrar o vetor posição e velocidade final
+
+$$
+\vec{x}\_{(t+\Delta t)} = \vec{x}\_{(t)} + \vec{v}\_{(t)} \Delta t + \frac{1}{2}\vec{a}\_{(t)}\Delta t^2
+$$
+
+$$
+\vec{v}\_{(t+\Delta t)} = \vec{v}\_{(t)} + \frac{1}{2}((\vec{a}\_{(t)} + \vec{a}\_{(t + \Delta t)})\Delta t)
+$$
+
+#### 8. Conclusão
 Dado a posição inicial do planeta (sua distância inicial em relação à estrela) e sua velocidade, podemos calcular sua energia mecânica total. Com base nessa energia, conseguimos determinar o tipo de órbita, bem como descrever sua trajetória ao longo do tempo.
 
 ### Implementação
@@ -114,7 +147,12 @@ O programa foi separado em dois arquivos: a main, onde está a equação da grav
 
 #### Instalação
 
-  Antes de tudo, certifique-se de ter instalado em seu computador o interpretador de Python configurado para as versões 3.10 e mais recentes. No Windows, isso pode ser feito na Microsoft Store, pesquisando "Python" e instalando a versão mais recente, ou ainda usando o Visual Studio Code, com um pacote da linguagem. No Linux, instale o pacote da linguagem que sua distribuição oferece: [Debian/Ubuntu e Fedora](https://python.org.br/instalacao-linux/) ou [Arch](https://wiki.archlinux.org/title/Python_(Portugu%C3%AAs))
+  Antes de tudo, certifique-se de ter instalado em seu computador o interpretador de Python configurado para as versões 3.10 e mais recentes. No Windows, isso pode ser feito na Microsoft Store, pesquisando "Python" e instalando a versão mais recente, ou ainda usando o Visual Studio Code, com um pacote da linguagem. No Linux, instale o pacote da linguagem que sua distribuição oferece: [Debian/Ubuntu e Fedora](https://python.org.br/instalacao-linux/) ou [Arch](https://wiki.archlinux.org/title/Python_(Portugu%C3%AAs))  
+  Após isso, faça o download de nosso repositório no seu computador. É possível fazer isso clicando no botão "Código"(Code) na tela inicial do repositório e em "Download zip", ou, na linha de comando, usando:
+
+  ```sh
+  git clone https://github.com/vrveiga/orb.git
+```
 
 #### Dependências
 
@@ -125,7 +163,7 @@ O programa foi separado em dois arquivos: a main, onde está a equação da grav
   pip install pygame
   ```
 #### Execução
-  Tudo instalado, apenas execute a main:
+  Tudo instalado, apenas execute, no diretório em que o repositório está, o programa main:
 
   ```sh
   python main.py
