@@ -107,6 +107,9 @@ Dado a posição inicial do planeta (sua distância inicial em relação à estr
 #### Linguagens e pacotes:
 Este projeto utiliza apenas a linguagem Python (o código é compatível com as versões 3.10 e adiante) e as bibliotecas Numpy e Pygame. O Numpy nos permite rapidamente realizar os cálculos com vetores usados na simulação, enquanto o Pygame nos permite facilmente implementar a parte gráfica e interativa.
 
+#### Organização:
+O programa foi separado em dois arquivos: a main, onde está a equação da gravitação newtoniana e o comportamento do programa, e a engine, que cuida da atualização das posições, velocidade e aceleração e de todas as burocracias do pygame para atualizar os textos e partículas na tela.
+
 ### Como usar
 
 #### Instalação
