@@ -35,6 +35,9 @@ Podemos escrever o vetor momento angular da seguinte forma:
 
 $$\vec{L} = \vec{r} \times \vec{p} = m \vec{r} \times \vec{\dot{r}} = m r^2 \dot{\theta} \hat{k},$$
 
+onde:
+- $$\hat{k}$$ é o versor na direção perpendicular a $$\hat{\theta}$$ e $$\hat{r}$$;
+
 $$L = m r^2 \dot{\theta}$$
 
 Isolando $$\dot{\theta}$$ temos:
@@ -83,7 +86,7 @@ onde:
 - $$e = \sqrt{1 + 2 \frac{E}{\epsilon}}$$ 
 - $$\epsilon = \frac{m K^2}{L^2}$$
 
-Evidenciando uma orbita eliptica.
+Evidenciando uma orbita cônica.
 
 #### 6. Análise da Orbita
 Atráves da equação encontrada da excentricidade, 
