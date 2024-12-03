@@ -6,12 +6,12 @@ Orb é o simulador físico que usa força gravitacional para calcular a trajetó
 Para isso, criamos um programa em python que simula a gravitação newtoniana, com uma interface gráfica que permite ao usuário definir os parâmetros iniciais, visualizar o movimento planetário e recomeçar várias vezes.
 
 <p align="center">
-  <img width="400" height="400" src="https://github.com/user-attachments/assets/38b0ac0d-52c4-433b-b747-387982ce115b">
+  <img width="500" height="500" src="https://github.com/user-attachments/assets/38b0ac0d-52c4-433b-b747-387982ce115b">
 </p>
 
 
 <p align="center">
-  <img width="400" height="400" src="https://github.com/user-attachments/assets/c49796fa-7f51-41ac-be58-efd3d966d6cb">
+  <img src="https://github.com/user-attachments/assets/527425c7-c758-4220-837a-aa20c485ea4f">
 </p>
 
 ## Conceitos de Física e Modelo Matemático:
