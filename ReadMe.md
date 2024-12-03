@@ -14,6 +14,75 @@ Para isso, criamos um programa em python que simula a gravitação newtoniana, c
   <img width="400" height="400" src="https://github.com/user-attachments/assets/c49796fa-7f51-41ac-be58-efd3d966d6cb">
 </p>
 
+## Conceitos de Física e Modelo Matemático:
+
+### 1. sistema adotado
+Adotando que a massa da estrela ($$M$$) é muito maior qua a massa do planeta ($$m$$), logo, podemos assumir que o centro de massa do sistema se encontra no centro da estrela. Além disso, como a trajetória criada por uma força central é plana, podemos usar o sistema polar de coordenadas $$(r, θ)$$. Tal que:
+$$\vec{r} = r \hat{r}$$
+$$\vec{v} = \dot{r} \hat{r} + r \dot{\theta} \hat{\theta}$$
+onde:
+- $$\hat{r}$$ é o versor na direção radial;
+- $$\hat{\theta}$$ é o versor na direção tangencial.
+
+Dessa forma, podemos escrever o módulo da velocidade como:
+$$v^2 = \dot{r^2} + r^2 \dot{\theta^2}$$
+
+#### 2. Momento angular
+Podemos escrever o vetor momento angular da seguinte forma:
+$$\vec{L} = \vec{r} \times \vec{p} = m \vec{r} \times \vec{\dot{r}} = m r^2 \dot{\theta} \hat{k},$$
+$$L = m r^2 \dot{\theta}$$
+Isolando $$\dot{\theta}$$ temos:
+$$\dot{\theta} = \frac{L}{mr^2}$$
+
+#### 3. Energia total 
+Logo, a energia total do sistema pode ser escrita como, energia cinética ($$E_c$$) mais Energia potencial ($$E_{pot}$$)
+$$E = E_c + E_{pot} = m\frac{v^2}{2} -\frac{k}{r} = m\frac{(\dot{r^2} + r^2 \dot{\theta^2})}{2} -\frac{k}{r}$$
+Sendo 
+- $$k = GMm$$,
+- $$G$$ = Constante Gravitacional
+
+Substituindo $$\dot{\theta}$$ pela equação isolada anteriormente, temos:
+$$E = \frac{1}{2} m \dot{r}^2 + \frac{L^2}{2 m r^2} - \frac{K}{r}$$
+
+Reescrevendo em função de $$\frac{dr}{dt}$$
+$$E = \frac{1}{2} m {(\frac{dr}{dt}})^2 + \frac{L^2}{2 m r^2} - \frac{K}{r}$$
+
+#### 4. $$d\theta$$ em função da Energia 
+Sabendo que:
+$$\dot{\theta} = \frac{d\theta}{dt} = \frac{L}{mr^2}$$
+$$dt = \frac{mr^2 d\theta}{L}$$
+
+Logo, substituindo na última equação de Energia encontrada:
+$$E = \frac{L^2}{2 m r^4} \left( \frac{dr}{d\theta} \right)^2 + \frac{L^2}{2 m r^2} - \frac{K}{r}$$
+
+isolando $$d\theta$$ em função $$dr$$ temos:
+$$d\theta = \frac{dr}{\sqrt{\frac{2m E}{L^2}r^4 + \frac{2m K}{L^2}r^3 - r^2}} = \frac{dr}{r^2 \sqrt{\frac{2m E}{L^2} + \frac{2m K}{L^2} r^{-1} - r^{-2}}}$$
+
+#### 5. Solução para $$r$$ 
+Após integrar de ambos os lados, encontramos a seguinte solução:
+$$\frac{1}{r} = \frac{m K}{L^2}\left[ 1 + e \cos(\theta - \theta_0) \right],$$
+onde:
+
+- $$e = \sqrt{1 + 2 \frac{E}{\epsilon}}$$ 
+- $$\epsilon = \frac{m K^2}{L^2}$$
+
+Evidenciando uma orbita eliptica.
+
+#### 6. Análise da Orbita
+Atráves da equação encontrada da excentricidade, 
+$$e = \sqrt{1 + 2 \frac{E}{\epsilon}}$$
+podemos montar a seguinte tabela: 
+
+| Excentricidade | Energia | tipo de Orbita |
+| ------ | ------ | ------ | 
+| $$e > 1$$ | $$E>0$$ | Hiperbole|
+| $$e = 1$$ | $$E=0$$ | Parábola |
+| $$e<1$$ | $$E < 0$$ | Elipese |
+| $$e=0$$ | $$E = -\frac{\epsilon}{2}$$ | Circunferência |
+
+#### 7. Conclusão
+Dado a posição inicial do planeta (sua distância inicial em relação à estrela) e sua velocidade, podemos calcular sua energia mecânica total. Com base nessa energia, conseguimos determinar o tipo de órbita, bem como descrever sua trajetória ao longo do tempo.
+
 ### Implementação
 
 #### Linguagens e pacotes:
