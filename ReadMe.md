@@ -1,5 +1,5 @@
 # Orb
-## Simulador de lançamento com força gravitacional
+## Simulador gravitacão
 
 ### Descrição básica do projeto
 Orb é o simulador físico que usa força gravitacional para calcular a trajetória de um planeta ao redor de uma estrela e a energia envolvida no sistema. A ideia foi conseguir visualizar como diferentes condições iniciais mudam a trajetória e velocidade do planeta e a troca de energia potencial e cinética ao longo do tempo.  
