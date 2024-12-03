@@ -51,9 +51,11 @@ Sendo
 - $$G$$ = Constante Gravitacional
 
 Substituindo $$\dot{\theta}$$ pela equação isolada anteriormente, temos:
+
 $$E = \frac{1}{2} m \dot{r}^2 + \frac{L^2}{2 m r^2} - \frac{K}{r}$$
 
 Reescrevendo em função de $$\frac{dr}{dt}$$
+
 $$E = \frac{1}{2} m {(\frac{dr}{dt}})^2 + \frac{L^2}{2 m r^2} - \frac{K}{r}$$
 
 #### 4. $$d\theta$$ em função da Energia 
