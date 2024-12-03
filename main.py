@@ -336,6 +336,22 @@ class EnergyUpdater:
         return f" E: {' ' if self.e >= 0 else ''}{self.e:.2e}"
 
 def main():
+    """
+    Função principal que gerencia a execução da simulação física.
+
+    A função 'main' cria uma instância da interface gráfica 'Sandbox', coleta os parâmetros
+    iniciais configurados pelo usuário, inicializa o motor de simulação 'Engine' e adiciona
+    os objetos (estrela e planeta) e elementos de interface, como textos e rastros, ademais
+    gerencia o loop principal da simulação e permite reinicializações que possibilitam o reajuste
+    das configurações iniciais.
+
+    Comportamento:
+    1. Inicializa a interface gráfica ('Sandbox') para receber configurações do usuário.
+    2. Cria e configura objetos no motor de simulação ('Engine').
+    3. Gerencia o loop principal para atualizações de física, renderização e entrada do usuário.
+    4. Permite reiniciar a simulação com novos parâmetros.
+
+    """
     screen = Sandbox()
     config = screen.run()
     
@@ -343,21 +359,36 @@ def main():
         engine = Engine(screen.screen, screen.font)
 
         def setup_objects(config):
+            """
+            Configura os objetos e textos no motor de simulação com base nas configurações fornecidas.
+
+            Parâmetros:
+            config (dicionário):
+                - massa_estrela (float): Massa da estrela.
+                - massa_planeta (float): Massa do planeta.
+                - posicao_planeta (list[float, float]): Posição inicial do planeta.
+                - velocidade_planeta (list[float, float]): Velocidade inicial do planeta.
+
+            """
+            #Cria os objetos (estrela e planeta) com propriedades configuradas
             star = Object(config['massa_estrela'], 12, trail=False)
             planet = Object(config['massa_planeta'], 3, trail=True)
 
             planet.x = np.array(config['posicao_planeta'])
             planet.v = np.array(config['velocidade_planeta'])
 
+            #Adiciona as forças gravitacionais ao planeta
             planet.add_force(lambda r: -G * config['massa_estrela'] * config['massa_planeta'] * r / np.linalg.norm(r) ** 3)
 
             engine.reset()  # Limpa a engine
 
+            #atualiza a engine com novos objetos.
             engine.add_object(star)
             engine.add_object(planet)
 
             energy_updater = EnergyUpdater(planet, star)
 
+            #Adiciona atualizadores de texto para monitorar energias e informações do viewport
             engine.add_text_with_updater(energy_updater.update_ke, np.array([10, 500]))
             engine.add_text_with_updater(energy_updater.update_pe, np.array([10, 530]))
             engine.add_text_with_updater(energy_updater.update_e, np.array([10, 560]))
