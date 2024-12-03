@@ -14,17 +14,17 @@ class InputBox:
     redimensionamento automático para acomodar o conteúdo textual.
 
     Atributos:
-        rect (pygame.Rect): Retângulo delimitador da caixa de entrada.
-        color_inactive (pygame.Color): Cor da borda quando a caixa está inativa (não selecionada).
-        color_active (pygame.Color): Cor da borda quando a caixa está ativa (selecionada para alterações).
-        color (pygame.Color): Cor atual da borda (ativa ou inativa).
-        text (str): Texto inserido na caixa.
-        font (pygame.font.Font): Fonte usada para renderizar o texto.
-        active (bool): Indica se a caixa está ativa (habilitada para entrada de texto).
+    - rect (pygame.Rect): Retângulo delimitador da caixa de entrada.
+    - color_inactive (pygame.Color): Cor da borda quando a caixa está inativa (não selecionada).
+    - color_active (pygame.Color): Cor da borda quando a caixa está ativa (selecionada para alterações).
+    - color (pygame.Color): Cor atual da borda (ativa ou inativa).
+    - text (str): Texto inserido na caixa.
+    - font (pygame.font.Font): Fonte usada para renderizar o texto.
+    - active (bool): Indica se a caixa está ativa (habilitada para entrada de texto).
     """
     def __init__(self, x, y, w, h, text=''):
         """
-        Inicializa os atributos do novo objeto 
+        Inicializa os atributos do novo objeto da classe
 
         Parâmetros:
             x (int): Coordenada X do canto superior esquerdo da caixa.
@@ -49,7 +49,7 @@ class InputBox:
             event (pygame.event.Event): Evento capturado pelo pygame.
 
         Comportamentos:
-            - Clique do mouse aaltera o estado da caixa (ativo/inativo).
+            - Clique do mouse altera o estado da caixa (ativo/inativo).
             - Entradas do teclado são adicionadas ao texto da caixa se a caixa estiver ativa.
             - Backspace remove o último caractere inserido se a caixa estiver ativa.
             - DELETE remove o primeiro caractere inserido se a caixa estiver ativa.
@@ -102,7 +102,34 @@ class InputBox:
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
 class Sandbox:
+    """
+    Classe principal para configurar e gerenciar a interface gráfica juntamente a entradas da simulação.
+
+    A Sandbox cria uma janela onde o usuário pode configurar parâmetros iniciais da simulação,
+    como massas, posições e velocidades de objetos através de caixas de entrada de texto gerenciadas 
+    pela classe InputBox, além disso a classe é responsável por gerenciar eventos, desenhar os elementos 
+    visuais na tela e coletar os dados configurados pelo usuário para utilizar na simulação.
+
+    Atributos:
+    - width (int): Largura da janela (viewport).
+    - height (int): Altura da janela (viewport).
+    - screen (pygame.Surface): Superfície do pygame onde os elementos são desenhados.
+    - massa_estrela (float): Massa inicial da estrela (em 1e16 kg).
+    - massa_planeta (float): Massa inicial do planeta (em kg).
+    - posicao_planeta (list): Posição inicial do planeta no formato [x, y].
+    - velocidade_planeta (list): Velocidade inicial do planeta no formato [vx, vy].
+    - input_boxes (list): Lista de objetos "InputBox" para entrada de dados.
+    - font (pygame.font.Font): Fonte usada para renderizar textos na interface.
+    - start_button (pygame.Rect): Botão "Começar" que inicia a simulação.
+    """
     def __init__(self, width=800, height=600):
+        """
+        Inicializa a interface gráfica e configura os parâmetros padrão da simulação.
+
+        Parâmetros:
+            width (int): Largura da janela (padrão: 800).
+            height (int): Altura da janela (padrão: 600).
+        """
         pygame.init()
         self.width = width
         self.height = height
@@ -136,6 +163,16 @@ class Sandbox:
         self.start_button = pygame.Rect(325, 510, 150, 50)
 
     def run(self):
+        """
+        Inicia o loop principal da classe que gerencia eventos e entradas do usuário.
+
+        Responsável por processar os eventos do pygame, atualizar os elementos visuais na tela
+        e utilizar os valores configurados nas caixas de entrada para inicializar a simulação.
+
+        Retorno:
+            Config (dicionário): Configurações iniciais da simulação, incluindo massas, posição e velocidade.
+            None: Caso o loop seja encerrado sem configurar os parâmetros ou o usuário feche a aplicação.
+        """
         running = True
         while running:
             self.screen.fill([20] * 3)
@@ -227,22 +264,73 @@ G = 6.6 * 10 ** -11
 
 # NOTE: as funções update_ke e update_pe sempre serão chamadas antes de update_e
 class EnergyUpdater:
+    """
+    Classe para calcular e atualizar as energias cinética, potencial e mecânica da simulação física.
+
+    A classe é responsável por calcular as energias do sistema gravitacional proposto que 
+    envolve dois objetos: um planeta e uma estrela de massa variável, os cálculos utilizam as propriedades
+    desses objetos para determinar o valor das diferentes formas de energia no tempo.
+
+    Atributos:
+    - planet (Object): O objeto que representa o planeta na simulação.
+    - star (Object): O objeto que representa a estrela na simulação.
+    - ke (float): Energia cinética do planeta.
+    - pe (float): Energia potencial gravitacional do sistema.
+    - e (float): Energia mecânica total do sistema.
+    """
     def __init__(self, planet: Object, star: Object):
+        """
+        Inicializa um objeto da classe a partir dos objetos (estrela e planeta) da simulação.
+
+        Parâmetros:
+            planet (Object): O objeto que representa o planeta.
+            star (Object): O objeto que representa a estrela.
+        """
         self.planet = planet
         self.star = star
 
     # Energia cinética
     def update_ke(self):
+        """
+        Calcula e retorna a energia cinética do planeta.
+
+        A energia cinética é determinada pela fórmula:
+        KE = 1/2 * m * v^2,
+        onde 'm' é a massa do planeta e 'v' é o módulo da velocidade.
+
+        Retorno:
+            str: Energia cinética formatada como uma string (para facilitar a exibição) no formato " T: <valor>".
+        """
         self.ke = 1/2 * self.planet.mass * np.linalg.norm(self.planet.v) ** 2
         return f" T: {' ' if self.ke >= 0 else ''}{self.ke:.2e}"
 
     # Energia potencial
     def update_pe(self):
+        """
+        Calcula e retorna a energia potencial gravitacional do sistema.
+
+        A energia potencial é determinada pela fórmula:
+        PE = -(G * M * m) / r,
+        onde 'G' é a constante gravitacional, 'M' é a massa da estrela, 'm' é a massa do planeta
+        e 'r' é a distância entre eles.
+
+        Retorno:
+            str: Energia potencial formatada como uma string (para facilitar a exibição) no formato " V: <valor>".
+        """
         self.pe = -G * self.star.mass * self.planet.mass / np.linalg.norm(self.planet.x)
         return f" V: {' ' if self.pe >= 0 else ''}{self.pe:.2e}"
 
     # Energia mecânica
     def update_e(self):
+        """
+        Calcula e retorna a energia mecânica total do sistema.
+
+        A energia mecânica é a soma das energias cinética e potencial:
+        E = KE + PE.
+
+        Retorno:
+            str: Energia mecânica total formatada como uma string (para facilitar a exibição) no formato " E: <valor>".
+        """
         self.e = self.ke + self.pe
         
         return f" E: {' ' if self.e >= 0 else ''}{self.e:.2e}"
