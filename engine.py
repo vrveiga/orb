@@ -22,7 +22,7 @@ from collections import deque
 from typing import Callable
 
 class Object:
-	"""
+    """
     Classe que representa a estrela e o planeta estarão formando o sistema de órbita. 
     Entradas: 
         mass(tipo float)-> massa do corpo
@@ -30,7 +30,7 @@ class Object:
         trail(tipo bool) -> Indica se queremos ou não rastro visível do deslocamento do corpo
     """
     def __init__(self, mass: float, radius: int, trail: bool):
-		"""
+        """
         Inicializa os atributos das instãncias, as quais são:
            mass(float)-> massa,
            radius(int)-> raio,
@@ -51,7 +51,7 @@ class Object:
         self.rect: pygame.Rect = None
 
     def add_force(self, force: Callable):
-		"""
+        """
         Método de adiciona forças ao vetor de forças do objeto
         Entrada: 
             force(funtion)-> função que será adicionada no vetor de forças
@@ -70,7 +70,7 @@ class TextUpdater:
         self.position = position
 
 class Engine:
-	"""
+    """
     Engine: É a classe responsável por controlar a taxa de quadros, configuração da tela da simulação, 
     simulação do movimento do planeta em torno da estrela. 
     A renderização de textos, rastros do movimento também são de responsabilidade da Engine. 
@@ -85,7 +85,7 @@ class Engine:
     N_MAX_TRAILS = 50
     
     def __init__(self, surface: pygame.Surface, font: pygame.font.Font):
-		"""
+        """
         Entradas:
             surface(object) -> superfície que serão feitas as simulações (receberá o pygame.Surface)
             font(pygame module)-> Recebe a fonte que será utilizada nos textos
@@ -144,7 +144,7 @@ class Engine:
         self.redraw = True
 
     def add_object(self, object: Object):
-		"""
+        """
         Método que armazena os objetos que serão simulados pela Engine.
         Entrada: 
             object-> recebe um objeto que simula um corpo como uma estrela ou um planeta que segue as características do Object.
@@ -152,7 +152,7 @@ class Engine:
         self.objects.append(object)
 
     def step(self):
-		""" Será responsável por:
+        """ Será responsável por:
         Atualização da física dos objetos.
         Renderização dos objetos na tela.
         Controle dos rastros dos objetos.
@@ -162,7 +162,7 @@ class Engine:
         modified_rects = [] # array que armazena os retângulos que foram alterados na tela. É usada para renderizar apenas o necessário
 
         def should_be_displayed(x, radius):
-			"""
+            """
             Verifica se um objeto de raio `radius` com coordenadas `x` no sistema de coordenadas canônico está dentro do campo de visão e precisa ser mostrado na tela.
                 Entradas:
                     x(array)->array com posição (x,y) do objeto
@@ -182,7 +182,7 @@ class Engine:
             return False
 
         def coordinate_to_pygame(x, radius):
-			"""
+            """
             Converte do sistema de coordenadas canônico para o sistema de coordenadas do viewport. Após isso, o converte para o sistema de coordenadas do pygame.
             Entradas: 
                 x(array)-> array com as coordenadas (x,y) do sistema canônico
@@ -193,7 +193,7 @@ class Engine:
             return self.pygame_coord_factor * (self.viewport_scale * (x - self.viewport_center) + [1/2, -1/2] * self.surface_size)
 
         if self.paused:
-			"""Quando a simulação está pausado ele limita o loop para no máximo 60 interações por segundo;"""
+            """Quando a simulação está pausado ele limita o loop para no máximo 60 interações por segundo;"""
 
             self.clock.tick(60)
             return
