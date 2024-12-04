@@ -20,7 +20,6 @@ Nome do Projeto: Simulador de gravitacao Newtoniana
 """
 
 import pygame
-import sys
 import numpy as np
 
 from engine import Engine, Object
@@ -393,7 +392,7 @@ def main():
             """
             #Cria os objetos (estrela e planeta) com propriedades configuradas
             star = Object(config['massa_estrela'], 12, trail=False)
-            planet = Object(config['massa_planeta'], 3, trail=True)
+            planet = Object(config['massa_planeta'], 5, trail=True)
 
             planet.x = np.array(config['posicao_planeta'])
             planet.v = np.array(config['velocidade_planeta'])

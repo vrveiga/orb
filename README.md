@@ -99,7 +99,7 @@ podemos montar a seguinte tabela:
 | ------ | ------ | ------ | 
 | $$e > 1$$ | $$E>0$$ | Hiperbole|
 | $$e = 1$$ | $$E=0$$ | Parábola |
-| $$e<1$$ | $$E < 0$$ | Elipese |
+| $$e<1$$ | $$E < 0$$ | Elipse |
 | $$e=0$$ | $$E = -\frac{\epsilon}{2}$$ | Circunferência |
 
 #### 7. Método adotado no nosso simulador

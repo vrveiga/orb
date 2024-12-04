@@ -17,8 +17,6 @@ Nome do Projeto: Simulador de gravitacao Newtoniana
 import pygame
 import numpy as np
 
-from collections import deque
-
 from typing import Callable
 
 class Object:
@@ -221,7 +219,7 @@ class Engine:
 
                 new_coords = coordinate_to_pygame(trail_coord - 4 / self.viewport_scale * v_unit, 1)
                 
-                pygame.draw.rect(self.surface, self.FOREGROUND_COLOR, [*new_coords, 1, 1])
+                pygame.draw.rect(self.surface, self.FOREGROUND_COLOR, [*new_coords, 3, 3])
                 
             """ Itera sobre todos os objetos,se não tiver no campo de visão ele passa ser realizar ações. 
             Se estiver no campo de visão realizamos certas mudanças no sistema de coordenadas para ir para o sistema de coordeadas do pygame, 
@@ -278,7 +276,7 @@ class Engine:
                     # pegamos o trail mais velho e retiramos ele do dict trails.
                     self.trails.pop(first_trail_coord)
                     # aqui, desenhamos a cor de background por cima do ponto que deve ser apagado
-                    trail_rect = pygame.draw.rect(self.surface, self.BACKGROUND_COLOR, [*coordinate_to_pygame(first_trail_coord, 1), 1, 1])
+                    trail_rect = pygame.draw.rect(self.surface, self.BACKGROUND_COLOR, [*coordinate_to_pygame(first_trail_coord, 1), 3, 3])
                     modified_rects.append(trail_rect)
 
                 v_unit = object.v / np.linalg.norm(object.v) #versor velocidade
@@ -288,7 +286,7 @@ class Engine:
                 trail_coord = object.x - (object.radius + 2) * v_unit
 
                 if should_be_displayed(trail_coord, 1):
-                    trail_rect = pygame.draw.rect(self.surface, self.FOREGROUND_COLOR, [*coordinate_to_pygame(trail_coord - 4 / self.viewport_scale * v_unit, 1), 1, 1])
+                    trail_rect = pygame.draw.rect(self.surface, self.FOREGROUND_COLOR, [*coordinate_to_pygame(trail_coord - 4 / self.viewport_scale * v_unit, 1), 3, 3])
 
                     modified_rects.append(trail_rect)
 
@@ -344,7 +342,7 @@ class Engine:
     def process_events(self):
         for event in pygame.event.get():
             match event.type:
-                # alt+f4: coloca true para o evento de fechamento do jogo
+                # Saida: coloca true para o evento de fechamento do jogo
                 case pygame.QUIT:
                     self.quit_event_triggered = True
                     break
