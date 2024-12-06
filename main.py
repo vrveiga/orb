@@ -90,7 +90,7 @@ class InputBox:
                     self.text = self.text[:-1]
                 elif event.key == pygame.K_DELETE:
                     self.text = self.text[1:]
-                elif len(self.text) < 4 and event.unicode.isprintable():
+                elif len(self.text) < 5 and event.unicode.isprintable():
                     self.text += event.unicode
         
     def update(self):
