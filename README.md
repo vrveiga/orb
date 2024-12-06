@@ -149,7 +149,7 @@ $$
 Para encontrar a energia potencial por sua vez, temos:
 
 $$
- \Delta V = \int_{r\_0}^{r} \vec{F} \cdot d\vec{r} = m  \int_{r\_0}^{r} \vec{a} \cdot d\vec{r} = - m \int_{r\_0}^{r} \frac{GMm}{r^2} \hat{r} \cdot d\vec{r} = \left.  - \frac{GMm}{r} \right |_{r\_0}^{r} 
+ \Delta V = \int_{\infty}^{r} \vec{F} \cdot d\vec{r} = - \int_{\infty}^{r} \frac{GMm}{r^2} \hat{r} \cdot d\vec{r} = \left.  - \frac{GMm}{r} \right |_{\infty}^{r} 
 $$
 
 $$
