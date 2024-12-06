@@ -137,11 +137,32 @@ $$
 
 #### 8. Cálculo da Energia no Sistema 
 Como a massa do planeta é constante, podemos encontrar a equação que diz respeito a energia cinética a partir do desenvolvimento da seguinte integral:
-$$ \int_{t_0}^{t} \vec{F} \cdot d\vec{r} = m  \int_{t_0}^{t} \frac{\vec{dv}}{dt} \cdot d\vec{r} = m  \int_{t_0}^{t} \vec{v} \cdot d\vec{v}  = \frac{m \cdot \vec{v}\cdot\vec{v}}{2} \; \Biggr|_{t_0}^{t} = \Delta{T} \\ \therefore T = \frac{m \cdot v^2}{2} $$
-Para encontrar a energia potêncial por sua vez, temos:
-$$  \int_{r_0}^{r} \vec{F} \cdot d\vec{r} = m  \int_{r_0}^{r} \vec{a} \cdot d\vec{r} = - m \int_{r_0}^{r} \frac{GMm}{r^2}\hat{r} \cdot d\vec{r} = - \frac{GMm}{r} \; \Biggr|_{r_0}^{r}= \Delta V \\ \therefore V = - \frac{GMm}{r}$$
+
+$$
+\Delta{T} = \int_{t\_0}^{t} \vec{F} \cdot d\vec{r} = m  \int_{t\_0}^{t} \frac{d\vec{v}}{dt} \cdot d\vec{r} = m  \int_{t\_0}^{t} \vec{v} \cdot d\vec{v} = \left. \frac{m \cdot \vec{v} \cdot \vec{v}}{2} \right|_{t\_0}^{t} 
+$$
+
+$$
+\therefore T = \frac{m \cdot v^2}{2}
+$$
+
+Para encontrar a energia potencial por sua vez, temos:
+
+$$
+ \Delta V = \int_{r\_0}^{r} \vec{F} \cdot d\vec{r} = m  \int_{r\_0}^{r} \vec{a} \cdot d\vec{r} = - m \int_{r\_0}^{r} \frac{GMm}{r^2} \hat{r} \cdot d\vec{r} = \left.  - \frac{GMm}{r} \right |_{r\_0}^{r} 
+$$
+
+$$
+\therefore V = - \frac{GMm}{r}
+$$
+
 Finalmente, para a energia mecânica total do sistema:
-$$ W = T + V $$
+
+$$
+W = T + V
+$$
+
+
 
 #### 9. Conclusão
 Dado a posição inicial do planeta (sua distância inicial em relação à estrela) e sua velocidade, podemos calcular sua energia mecânica total. Com base nessa energia, conseguimos determinar o tipo de órbita, bem como descrever sua trajetória ao longo do tempo.
