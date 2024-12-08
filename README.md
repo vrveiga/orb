@@ -1,9 +1,9 @@
 # Orb
-## Simulador gravitação
+## Simulador de gravitação
 
 ### Descrição básica do projeto
-Orb é o simulador físico que usa força gravitacional para calcular a trajetória de um planeta ao redor de uma estrela e a energia envolvida no sistema. A ideia foi conseguir visualizar como diferentes condições iniciais mudam a trajetória e velocidade do planeta e a troca de energia potencial e cinética ao longo do tempo.  
-Para isso, criamos um programa em python que simula a gravitação newtoniana, com uma interface gráfica que permite ao usuário definir os parâmetros iniciais, visualizar o movimento planetário e recomeçar várias vezes.
+Orb é o simulador físico que usa a força gravitacional newtoniana para calcular a trajetória de um planeta ao redor de uma estrela e a energia envolvida no sistema. A ideia foi conseguir visualizar como diferentes condições iniciais mudam a trajetória e velocidade do planeta e a troca de energia potencial e cinética ao longo do tempo.  
+Para isso, criamos um programa em Python que realiza essa simulação com uma interface gráfica que permite ao usuário definir os parâmetros iniciais, visualizar o movimento planetário e o comportamento da energia e recomeçar várias vezes.
 
 <p align="center">
   <img width="500" height="500" src="https://github.com/user-attachments/assets/38b0ac0d-52c4-433b-b747-387982ce115b">
@@ -86,16 +86,16 @@ onde:
 - $$e = \sqrt{1 + 2 \frac{E}{\epsilon}}$$ 
 - $$\epsilon = \frac{m K^2}{L^2}$$
 
-Evidenciando uma orbita cônica.
+Evidenciando uma órbita cônica.
 
-#### 6. Análise da Orbita
+#### 6. Análise da Órbita
 Atráves da equação encontrada da excentricidade, 
 
 $$e = \sqrt{1 + 2 \frac{E}{\epsilon}}$$
 
 podemos montar a seguinte tabela: 
 
-| Excentricidade | Energia | tipo de Orbita |
+| Excentricidade | Energia | Tipo de órbita |
 | ------ | ------ | ------ | 
 | $$e > 1$$ | $$E>0$$ | Hiperbole|
 | $$e = 1$$ | $$E=0$$ | Parábola |
@@ -104,7 +104,7 @@ podemos montar a seguinte tabela:
 
 #### 7. Método adotado no nosso simulador
 
-Utilizamos coordenada cartesianas, em que a origem se encontra no centro de massa da estrela. E de acordo com a segunda lei de Newton, temos:
+Utilizamos coordenadas cartesianas, em que a origem se encontra no centro de massa da estrela. E de acordo com a segunda lei de Newton, temos:
 
 $$
 \vec{F} = m\vec{a} = -\frac{GMm}{r^2}\hat{r}
@@ -114,7 +114,7 @@ $$
 \vec{a} = -\frac{GM}{r^2}\hat{r}
 $$
 
-Com isso podemos adotar o método numérico de **Velocity Verlet**, 
+Com isso, podemos adotar o método numérico de **Velocity Verlet**, 
 Passo intermediário:
 
 $$
@@ -173,7 +173,7 @@ Dado a posição inicial do planeta (sua distância inicial em relação à estr
 Este projeto utiliza apenas a linguagem Python (o código é compatível com as versões 3.10 e adiante) e as bibliotecas Numpy e Pygame. O Numpy nos permite rapidamente realizar os cálculos com vetores usados na simulação, enquanto o Pygame nos permite facilmente implementar a parte gráfica e interativa.
 
 #### Organização:
-O programa foi separado em dois arquivos: a main, onde está a equação da gravitação newtoniana e o comportamento do programa, e a engine, que cuida da atualização das posições, velocidade e aceleração e de todas as burocracias do pygame para atualizar os textos e partículas na tela.
+O programa foi separado em dois arquivos: a main, onde está escrito o comportamento da interface e onde é inicializada a simulação, com os textos, partículas e forças, e a engine, que cuida da atualização das posições, velocidade e aceleração do planeta e de toda a atualização e renderização dos textos e partículas na tela, com a ajuda do pygame.
 
 ### Como usar
 
